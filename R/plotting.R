@@ -3,6 +3,16 @@
 #'
 #' @param x An object of class \code{biplot}.
 #' @param exp.factor factor to expand plotting area beyond samples.
+#' @param axis.predictivity either logical or a numeric value between 0 and 1.
+#'          If it is a numeric value, this value is used as threshold so that
+#'          only axes with axis predictivity larger than the threshold is displayed.
+#'          If \code{axis.predictivity = TRUE}, the axis color is 'diluted' in
+#'          proportion with the axis predictivity.
+#' @param sample.predictivity either a logical or a numeric value between 0 and 1.
+#'          If it is a numeric value, this value is used as threshold so that
+#'          only samples with sample predictivity larger than the threshold is displayed.
+#'          if \code{sample.predictivity = TRUE}, the sample size is shrinked in
+#'          proportion with the sample predictivity.
 #' @param ... additional arguments.
 #'
 #' @return An object of class \code{biplot}.
@@ -19,24 +29,45 @@
 #' @importFrom grid grid.get
 #' @importFrom grid convertX
 #' @importFrom grid convertY
+#' @importFrom grDevices colorRampPalette
 #'
 #' @examples
 #' biplot (iris[,1:4]) |> PCA() |> plot()
-plot.biplot <- function(x, exp.factor=1.2, ...)
+plot.biplot <- function(x, exp.factor=1.2, axis.predictivity=NULL, sample.predictivity=NULL, ...)
 {
   #----------
-  .samples.plot <- function(Z, group.aes, sample.aes, n, g.names, ggrepel.labs)
+  .samples.plot <- function(Z, group.aes, sample.aes, n, g.names,
+                            ggrepel.labs, too.small, cex.vec)
   {
     if (sample.aes$connected)
       graphics::lines (Z[,1], Z[,2], col=sample.aes$connect.col, lty=sample.aes$connect.lty, lwd=sample.aes$connect.lwd)
     x.vals <- Z[, 1]
     y.vals <- Z[, 2]
     invals <- x.vals < usr[2] & x.vals > usr[1] & y.vals < usr[4] & y.vals > usr[3]
-    Z <- Z[invals, ]
+    which.samples <- rep(FALSE, n)
+    for (j in 1:length(sample.aes$which))
+      which.samples[group.aes == g.names[sample.aes$which[j]]] <- TRUE
     groups <- levels(group.aes)
-    group.aes <- group.aes[invals]
+
     if (sample.aes$label[1]=="ggrepel")
     {
+      ZZ <- data.frame (no=1:n, group.aes = group.aes, pch = rep(NA,n),
+                        col = rep(NA,n), cex = rep(NA,n),
+                        cex.vec, Z)
+
+      for(j in 1:length(sample.aes$which))
+      {
+        ZZ$pch[group.aes==g.names[sample.aes$which[j]]] = sample.aes$pch[j]
+        ZZ$col[group.aes==g.names[sample.aes$which[j]]] = sample.aes$col[j]
+        ZZ$cex[group.aes==g.names[sample.aes$which[j]]] = sample.aes$cex[j]
+      }
+      ZZ <- ZZ[which.samples,]
+      ZZ <- ZZ[invals[which.samples],]
+      if (!is.null(too.small))
+        ZZ <- ZZ[-stats::na.omit(match(too.small,ZZ[,1])),]
+      ZZ <- ZZ[,-1]
+      ZZ.points <- ZZ[,2:5]
+      ZZ <- ZZ[,-(1:5)]
       for (j in 1:nrow(ggrepel.labs$coords))
          graphics::text(ggrepel.labs$coords[j, 1], ggrepel.labs$coords[j, 2], labels = ggrepel.labs$coords[j,3],
                         cex = sample.aes$label.cex[ggrepel.labs$visible[j]],
@@ -50,24 +81,40 @@ plot.biplot <- function(x, exp.factor=1.2, ...)
     }
     else
     {
-      which.samples <- rep(FALSE, n)
-      for (j in 1:length(sample.aes$which))
-        which.samples[group.aes == g.names[sample.aes$which[j]]] <- TRUE
-      ZZ <- Z[which.samples,]
-      Z.labels <- rownames(Z)[which.samples]
-      for (j in 1:length(sample.aes$label.side))
-      {  text.pos <- match(sample.aes$label.side[j], c("bottom", "left", "top", "right"))
-         if (sample.aes$label[j]) graphics::text(ZZ[j, 1], ZZ[j, 2], labels = Z.labels[j],
-                                              cex = sample.aes$label.cex[j], col = sample.aes$label.col[j],
-                                              pos = text.pos, offset = sample.aes$label.offset[j])
+      ZZ <- data.frame (no=1:n, names=rownames(Z), label=sample.aes$label,
+                        label.side = sample.aes$label.side, label.cex = sample.aes$label.cex,
+                        label.col = sample.aes$label.col, label.offset = sample.aes$label.offset,
+                        group.aes = group.aes, pch = rep(NA,n),
+                        col = rep(NA,n), cex = rep(NA,n),
+                        cex.vec, Z)
+
+      for(j in 1:length(sample.aes$which))
+      {
+        ZZ$pch[group.aes==g.names[sample.aes$which[j]]] = sample.aes$pch[j]
+        ZZ$col[group.aes==g.names[sample.aes$which[j]]] = sample.aes$col[j]
+        ZZ$cex[group.aes==g.names[sample.aes$which[j]]] = sample.aes$cex[j]
+      }
+      ZZ <- ZZ[which.samples,]
+      ZZ <- ZZ[invals[which.samples],]
+      if (!is.null(too.small))
+        ZZ <- ZZ[-stats::na.omit(match(too.small,ZZ[,1])),]
+      ZZ <- ZZ[,-1]
+      ZZ.labels <- ZZ[,1:6]
+      ZZ <- ZZ[,-(1:6)]
+      ZZ.points <- ZZ[,2:5]
+      ZZ <- ZZ[,-(1:5)]
+      for (j in 1:nrow(ZZ.labels))
+      {  text.pos <- match(ZZ.labels$label.side[j], c("bottom", "left", "top", "right"))
+         if (ZZ.labels$label[j])
+           graphics::text(ZZ[j, 1], ZZ[j, 2], labels = ZZ.labels$names[j],
+                          cex = ZZ.labels$label.cex[j], col = ZZ.labels$label.col[j],
+                          pos = text.pos, offset = ZZ.labels$label.offset[j])
       }
     }
-    for (j in 1:length(sample.aes$which))
-    {  group.num <- levels(group.aes)[sample.aes$which[j]]
-       Z.class <- Z[group.aes==group.num, , drop = FALSE]
-       graphics::points(x = Z.class[, 1], y = Z.class[, 2], pch = sample.aes$pch[j], col = sample.aes$col[j],
-                     cex = sample.aes$cex[j])
-    }
+    for (i in 1:nrow(ZZ.points))
+      graphics::points (x=ZZ[i,1], y=ZZ[i,2], pch=ZZ.points$pch[i],
+                           col=ZZ.points$col[i],
+                           cex=ZZ.points$cex.vec[i]*ZZ.points$cex[i])
   }
   #----------
   .means.plot <- function(Z, sample.aes, g.names, ggrepel.labs)
@@ -226,10 +273,11 @@ plot.biplot <- function(x, exp.factor=1.2, ...)
            .marker.label.cm(x, y, grad = -1/coef[2], marker.val, expand = tick.size, col = col, label.on.off = label.on.off, side = side, pos = pos, offset = offset, label.col = label.col, cex = cex)
   }
   #----------
-  .lin.axes.plot <- function(z.axes, ax.aes, predict.mat)
+  .lin.axes.plot <- function(z.axes, ax.aes, predict.mat, too.small)
   {
     for (i in 1:length(ax.aes$which))
     {  ax.num <- ax.aes$which[i]
+       if (!is.null(too.small)) if (ax.num %in% too.small) next
        this.axis<-z.axes[[i]]
        marker.mat <- this.axis$coords
        marker.mat <- marker.mat[rev(order(marker.mat[, 3])), ]
@@ -243,52 +291,54 @@ plot.biplot <- function(x, exp.factor=1.2, ...)
          graphics::abline(coef=lin.coef, col = ax.aes$col[i], lwd = ax.aes$lwd[i], lty = ax.aes$lty[i])
 
        if (ax.aes$label.dir == "Hor") {  graphics::par(las = 1)
-                                         adjust <- c(0.5, 1, 0.5, 0)       }
+         adjust <- c(0.5, 1, 0.5, 0)       }
        if (ax.aes$label.dir == "Orthog") { graphics::par(las = 2)
-                                           adjust <- c(1, 1, 0, 0)         }
+         adjust <- c(1, 1, 0, 0)         }
        if (ax.aes$label.dir == "Paral") {  graphics::par(las = 0)
-                                           adjust <- c(0.5, 0.5, 0.5, 0.5) }
+         adjust <- c(0.5, 0.5, 0.5, 0.5) }
 
        h <- nrow(marker.mat)
        if (is.null(this.axis$b))
-         { if (y.vals[1] < y.vals[h])
-             graphics::mtext(text = ax.aes$names[i], side = 1, line = ax.aes$label.line[i], adj = adjust[1], at = x.vals[1], col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
-           else
-             graphics::mtext(text = ax.aes$names[i], side = 3, line = ax.aes$label.line[i], adj = adjust[3], at = y.vals[1], col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
-         }
+       { if (y.vals[1] < y.vals[h])
+           graphics::mtext(text = ax.aes$names[i], side = 1, line = ax.aes$label.line[i], adj = adjust[1], at = x.vals[1], col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
+         else
+           graphics::mtext(text = ax.aes$names[i], side = 3, line = ax.aes$label.line[i], adj = adjust[3], at = y.vals[1], col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
+       }
        else
-         { y1.ster <- lin.coef[2] * usr[1] + lin.coef[1]
-           y2.ster <- lin.coef[2] * usr[2] + lin.coef[1]
-           x1.ster <- (usr[3] - lin.coef[1])/lin.coef[2]
-           x2.ster <- (usr[4] - lin.coef[1])/lin.coef[2]
-           if (lin.coef[2] == 0)
-             { if (x.vals[1] < x.vals[h])
-                 graphics::mtext(text = ax.aes$names[i], side = 2, line = ax.aes$label.line[i], adj = adjust[2], at = y.vals[1], col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
-               else
-                 graphics::mtext(text = ax.aes$names[i], side = 4, line = ax.aes$label.line[i], adj = adjust[4], at = y.vals[1], col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
-             }
-           if (lin.coef[2] > 0)
-             {  if (x.vals[1] < x.vals[h])
-                  if (y1.ster <= usr[4] & y1.ster >= usr[3])
-                    graphics::mtext(text = ax.aes$names[i], side = 2, line = ax.aes$label.line[i], adj = adjust[2], at = y1.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
-                  else
-                    graphics::mtext(text = ax.aes$names[i], side = 1, line = ax.aes$label.line[i], adj = adjust[1], at = x1.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
-                else if (y2.ster <= usr[4] & y2.ster >= usr[3])
-                       graphics::mtext(text = ax.aes$names[i], side = 4, line = ax.aes$label.line[i], adj = adjust[4], at = y2.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
-                     else
-                       graphics::mtext(text = ax.aes$names[i], side = 3, line = ax.aes$label.line[i], adj = adjust[3], at = x2.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
-             }
-           if (lin.coef[2] < 0)
-             {  if (x.vals[1] < x.vals[h])
-                   if (y1.ster <= usr[4] & y1.ster >= usr[3])
-                      graphics::mtext(text = ax.aes$names[i], side = 2, line = ax.aes$label.line[i], adj = adjust[2], at = y1.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
+       { y1.ster <- lin.coef[2] * usr[1] + lin.coef[1]
+         y2.ster <- lin.coef[2] * usr[2] + lin.coef[1]
+         x1.ster <- (usr[3] - lin.coef[1])/lin.coef[2]
+         x2.ster <- (usr[4] - lin.coef[1])/lin.coef[2]
+         if (lin.coef[2] == 0)
+           { if (x.vals[1] < x.vals[h])
+               graphics::mtext(text = ax.aes$names[i], side = 2, line = ax.aes$label.line[i], adj = adjust[2], at = y.vals[1], col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
+             else
+               graphics::mtext(text = ax.aes$names[i], side = 4, line = ax.aes$label.line[i], adj = adjust[4], at = y.vals[1], col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
+           }
+         if (lin.coef[2] > 0)
+           {  if (x.vals[1] < x.vals[h])
+                if (y1.ster <= usr[4] & y1.ster >= usr[3])
+                  graphics::mtext(text = ax.aes$names[i], side = 2, line = ax.aes$label.line[i], adj = adjust[2], at = y1.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
+                else
+                  graphics::mtext(text = ax.aes$names[i], side = 1, line = ax.aes$label.line[i], adj = adjust[1], at = x1.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
+              else if (y2.ster <= usr[4] & y2.ster >= usr[3])
+                     graphics::mtext(text = ax.aes$names[i], side = 4, line = ax.aes$label.line[i], adj = adjust[4], at = y2.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
                    else
-                      graphics::mtext(text = ax.aes$names[i], side = 3, line = ax.aes$label.line[i], adj = adjust[3], at = x2.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
-                else if (y2.ster <= usr[4] & y2.ster >= usr[3])
-                       graphics::mtext(text = ax.aes$names[i], side = 4, line = ax.aes$label.line[i], adj = adjust[4], at = y2.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
-                     else
-                       graphics::mtext(text = ax.aes$names[i], side = 1, line = ax.aes$label.line[i], adj = adjust[1], at = x1.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
-             }
+                     graphics::mtext(text = ax.aes$names[i], side = 3, line = ax.aes$label.line[i], adj = adjust[3], at = x2.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
+           }
+         if (lin.coef[2] < 0)
+           {  if (x.vals[1] < x.vals[h])
+                if (y1.ster <= usr[4] & y1.ster >= usr[3])
+                  graphics::mtext(text = ax.aes$names[i], side = 2, line = ax.aes$label.line[i], adj = adjust[2], at = y1.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
+                else
+                  graphics::mtext(text = ax.aes$names[i], side = 3, line = ax.aes$label.line[i], adj = adjust[3], at = x2.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
+              else if (y2.ster <= usr[4] & y2.ster >= usr[3])
+                     graphics::mtext(text = ax.aes$names[i], side = 4, line = ax.aes$label.line[i], adj = adjust[4], at = y2.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
+                   else
+                     graphics::mtext(text = ax.aes$names[i], side = 1, line = ax.aes$label.line[i], adj = adjust[1], at = x1.ster, col = ax.aes$label.col[i], cex = ax.aes$label.cex[i])
+           }
+
+
         }
 
       invals <- x.vals < usr[2] & x.vals > usr[1] & y.vals < usr[4] & y.vals > usr[3]
@@ -397,6 +447,31 @@ plot.biplot <- function(x, exp.factor=1.2, ...)
 
   if (is.null(x$axes)) x <- axes(x)
   ax.aes <- x$axes
+  too.small <- NULL
+  if (!is.null(axis.predictivity))
+  {
+    if(is.null(x$axis.predictivity)) x <- fit.measures(x)
+    if(is.numeric(axis.predictivity))
+    {
+      too.small <- (1:x$p)[x$axis.predictivity<axis.predictivity]
+    }
+    if(axis.predictivity)
+    {
+      for (j in 1:length(ax.aes$which))
+      {
+        ax.num <- ax.aes$which[j]
+        ax.col <- ax.aes$col[j]
+        ax.aes$col[j] <- colorRampPalette(c("white",ax.col))(101)[round(100*x$axis.predictivity[ax.num])+1]
+        ax.col <- ax.aes$label.col[j]
+        ax.aes$label.col[j] <- grDevices::colorRampPalette(c("white",ax.col))(101)[round(100*x$axis.predictivity[ax.num])+1]
+        ax.col <- ax.aes$tick.col[j]
+        ax.aes$tick.col[j] <- grDevices::colorRampPalette(c("white",ax.col))(101)[round(100*x$axis.predictivity[ax.num])+1]
+        ax.col <- ax.aes$tick.label.col[j]
+        ax.aes$tick.label.col[j] <- grDevices::colorRampPalette(c("white",ax.col))(101)[round(100*x$axis.predictivity[ax.num])+1]
+      }
+    }
+  }
+
 
   if (length(ax.aes$which) > 0)
   {
@@ -406,12 +481,25 @@ plot.biplot <- function(x, exp.factor=1.2, ...)
 
     z.axes <- lapply(1:length(ax.aes$which), .calibrate.axis, Xhat, x$means, x$sd, x$ax.one.unit, ax.aes$which,
                      ax.aes$ticks, ax.aes$orthogx, ax.aes$orthogy)
-    .lin.axes.plot(z.axes, ax.aes, predict.mat=NULL)
+    .lin.axes.plot(z.axes, ax.aes, predict.mat=NULL, too.small)
 
   }
 
-  if (!is.null(x$samples$which)) .samples.plot(Z, x$group.aes, x$samples, x$n, x$g.names, ggrepel.samples)
-  if (!is.null(x$Znew)) .newsamples.plot (x$Znew, x$newsamples, ggrepel.new)
+  too.small <- NULL
+  cex.vec <- rep(1, x$n)
+  if (!is.null(sample.predictivity) & !inherits(x, "CVA"))
+  {
+    if(is.null(x$sample.predictivity)) x <- fit.measures(x)
+    if(is.numeric(sample.predictivity))
+      too.small <- (1:x$n)[x$sample.predictivity<sample.predictivity]
+    if(sample.predictivity)
+      cex.vec <- x$sample.predictivity
+  }
+
+  if (!is.null(x$samples$which)) .samples.plot(Z, x$group.aes, x$samples, x$n, x$g.names, ggrepel.samples,
+                                               too.small, cex.vec)
+
+    if (!is.null(x$Znew)) .newsamples.plot (x$Znew, x$newsamples, ggrepel.new)
   if (!is.null(x$class.means)) if (x$class.means)
     {
        if (is.null(x$means.aes)) x <- means(x)

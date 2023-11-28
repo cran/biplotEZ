@@ -152,13 +152,13 @@ biplot(rock, scaled = TRUE) |> PCA() |>
                                axes(which = c("shape","peri"), 
                                     col=c("lightskyblue","slategrey"),
                                     lwd = c(1,2), lty=2) |>
-                plot()
+                               plot()
 
 ## ---- fig.height = 6, fig.width = 7-------------------------------------------
 biplot(rock, scaled = TRUE) |> PCA() |> 
                                axes(col=c("lightskyblue","slategrey","blue"),
                                     label.dir="Hor", label.line=c(0,0.5,1,1.5)) |>
-                                    plot()
+                               plot()
 
 ## ---- fig.height = 6, fig.width = 7-------------------------------------------
 biplot(rock, scaled = TRUE) |> PCA() |> 
@@ -167,6 +167,30 @@ biplot(rock, scaled = TRUE) |> PCA() |>
                                     ax.names = c("area", "perimeter", "shape", 
                                                  "permeability in milli-Darcies")) |>
                                plot()
+
+## -----------------------------------------------------------------------------
+  obj <- biplot(airquality)
+  obj
+
+## -----------------------------------------------------------------------------
+  summary(obj)
+
+## ---- fig.height = 6, fig.width = 7-------------------------------------------
+obj <- biplot(state.x77, scale = TRUE) |> PCA() |> 
+  fit.measures() |> plot()
+summary (obj)
+
+## -----------------------------------------------------------------------------
+obj <- biplot(state.x77, scale = TRUE) |> PCA() |> 
+  fit.measures() 
+summary (obj, adequacy = FALSE, sample.predictivity = FALSE)
+
+## -----------------------------------------------------------------------------
+biplot(state.x77, scale = TRUE) |> PCA(group.aes = state.region) |>
+  samples (which = "South", pch = 15, label = T, label.cex=0.5) |> 
+  axes (col = "black") |>
+  fit.measures() |> plot (sample.predictivity = TRUE,
+                          axis.predictivity = TRUE) 
 
 ## ---- fig.height = 6, fig.width = 7-------------------------------------------
 sunspots <- matrix (sunspot.month[1:(264*12)], ncol = 12, byrow = TRUE)

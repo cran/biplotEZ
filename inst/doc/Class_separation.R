@@ -45,3 +45,17 @@ biplot(state.x77, scaled = TRUE) |>
   samples (label = "ggrepel", label.cex=0.65) |> 
   means (label = "ggrepel", label.cex=0.8) |> plot()
 
+## ---- fig.height = 6, fig.width = 7-------------------------------------------
+obj <- biplot(state.x77, scaled = TRUE) |> 
+       CVA(classes = state.division) |> 
+       fit.measures() |>
+       plot()
+summary (obj)
+
+## ---- fig.height = 6, fig.width = 7-------------------------------------------
+obj <- biplot(state.x77, scaled = TRUE) |> 
+       CVA(classes = state.region) |> 
+       fit.measures()
+summary (obj, adequacy = FALSE, within.class.axis.predictivity = FALSE,
+         within.class.sample.predictivity = FALSE)
+
