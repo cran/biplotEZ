@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>MDS</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+<style type="text/css">
+
+div.csl-bib-body { }
+div.csl-entry {
+clear: both;
+margin-bottom: 0em;
+}
+.hanging div.csl-entry {
+margin-left:2em;
+text-indent:-2em;
+}
+div.csl-left-margin {
+min-width:2em;
+float:left;
+}
+div.csl-right-inline {
+margin-left:2em;
+padding-left:1em;
+}
+div.csl-indent {
+margin-left: 2em;
+}
+</style>
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">MDS</h1>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#what-is-mds" id="toc-what-is-mds"><span class="toc-section-number">1</span> What is MDS</a></li>
+<li><a href="#regression-biplot" id="toc-regression-biplot"><span class="toc-section-number">2</span> Regression biplot</a></li>
+<li><a href="#principal-coordinate-analysis-pco-biplots" id="toc-principal-coordinate-analysis-pco-biplots"><span class="toc-section-number">3</span> Principal Coordinate Analysis (PCO)
+biplots</a></li>
+<li><a href="#references" id="toc-references">References</a></li>
+</ul>
+</div>
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(biplotEZ)</span></code></pre></div>
+<p>This vignette deals with biplots based on Multidimensional scaling
+(MDS).</p>
+<div id="what-is-mds" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> What is MDS</h1>
+<p>In general, multidimensional scaling deals with constructing a low
+dimensional map of <span class="math inline">\(n\)</span> samples such
+that the Euclidean distances between the samples match a given set of
+dissimilarities <span class="math inline">\(\mathbf{\Delta}:n \times
+n\)</span> as closely as possible. Here the focus is on Principal
+Coordinate Analysis (PCO), an approach based on the singular value
+decomposition of a matrix. However, the regression biplot provides a
+general structure for fitting any 2D map of samples with biplot
+axes.</p>
+</div>
+<div id="regression-biplot" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Regression biplot</h1>
+<p>The function <code>regress</code> accepts as arguments an object of
+class <code>biplot</code>. The call to the function <code>biplot</code>
+should contain the data set that will be used to construct the biplot
+axes. The second argument <code>Z</code> contains the coordinates of the
+samples in the MDS map. By default linear regression axes will be fitted
+to the plot. If <span class="math inline">\(\mathbf{X}\)</span> denote
+the data matrix, the directions of the biplot axes are found by solving
+the regression equation</p>
+<p><span class="math display">\[
+\mathbf{X} = \mathbf{ZH}&#39; + \mathbf{E}.
+\]</span> The matrix <span class="math inline">\(\mathbf{H}&#39;=(\mathbf{Z&#39;Z})^{-1}\mathbf{Z&#39;X}\)</span>
+and calibration of the axes proceed analogous to equation (2) in the
+biplotEZ vignette. The coordinates of the marker <span class="math inline">\(/mu\)</span> on biplot axis <span class="math inline">\(j\)</span> is given as follows</p>
+<p><span class="math display">\[
+p_{\mu}
+=  \frac{\mu}{\mathbf{h}_{(j)}&#39;\mathbf{h}_{(j)}}\mathbf{h}_{(j)}.
+\]</span></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">biplot</span>(rock) <span class="sc">|&gt;</span> </span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="fu">regress</span>(<span class="at">Z =</span> MASS<span class="sc">::</span><span class="fu">sammon</span>(<span class="fu">dist</span>(<span class="fu">scale</span>(rock), <span class="at">method=</span><span class="st">&quot;manhattan&quot;</span>))<span class="sc">$</span>points) <span class="sc">|&gt;</span> </span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a>  <span class="fu">plot</span>()</span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&gt; Initial stress        : 0.02554</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; stress after  10 iters: 0.01094, magic = 0.500</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; stress after  20 iters: 0.01080, magic = 0.500</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; stress after  30 iters: 0.01078, magic = 0.500</span></span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>More flexibility is provided by approximating the biplot axes using
+B-splines. A calibrated trajectory represented in a matrix <span class="math inline">\(\mathbf{H}:m \times 2\)</span> snakes through the
+samples points <span class="math inline">\(\mathbf{Z}\)</span> such that
+the marker on the trajectory which is closest to a particular sample
+gives the predicted value of that sample for the particular variable. To
+retain smoothness of the trajectory <span class="math inline">\(\mathbf{H}\)</span>, B-splines are used.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="fu">biplot</span>(rock) <span class="sc">|&gt;</span> </span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>  <span class="fu">regress</span>(<span class="at">Z =</span> MASS<span class="sc">::</span><span class="fu">sammon</span>(<span class="fu">dist</span>(<span class="fu">scale</span>(rock), <span class="at">method=</span><span class="st">&quot;manhattan&quot;</span>))<span class="sc">$</span>points,</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>          <span class="at">axes =</span> <span class="st">&quot;splines&quot;</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="fu">plot</span>()</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&gt; Initial stress        : 0.02554</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&gt; stress after  10 iters: 0.01094, magic = 0.500</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; stress after  20 iters: 0.01080, magic = 0.500</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a><span class="co">#&gt; stress after  30 iters: 0.01078, magic = 0.500</span></span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<pre><code>#&gt; Calculating spline axis for variable 1 
+#&gt;     area     peri     shape   perm
+#&gt; 1   4990 2791.900 0.0903296    6.3
+#&gt; 2   7002 3892.600 0.1486220    6.3
+#&gt; 3   7558 3930.660 0.1833120    6.3
+#&gt; 4   7352 3869.320 0.1170630    6.3
+#&gt; 5   7943 3948.540 0.1224170   17.1
+#&gt; 6   7979 4010.150 0.1670450   17.1
+#&gt; 7   9333 4345.750 0.1896510   17.1
+#&gt; 8   8209 4344.750 0.1641270   17.1
+#&gt; 9   8393 3682.040 0.2036540  119.0
+#&gt; 10  6425 3098.650 0.1623940  119.0
+#&gt; 11  9364 4480.050 0.1509440  119.0
+#&gt; 12  8624 3986.240 0.1481410  119.0
+#&gt; 13 10651 4036.540 0.2285950   82.4
+#&gt; 14  8868 3518.040 0.2316230   82.4
+#&gt; 15  9417 3999.370 0.1725670   82.4
+#&gt; 16  8874 3629.070 0.1534810   82.4
+#&gt; 17 10962 4608.660 0.2043140   58.6
+#&gt; 18 10743 4787.620 0.2627270   58.6
+#&gt; 19 11878 4864.220 0.2000710   58.6
+#&gt; 20  9867 4479.410 0.1448100   58.6
+#&gt; 21  7838 3428.740 0.1138520  142.0
+#&gt; 22 11876 4353.140 0.2910290  142.0
+#&gt; 23 12212 4697.650 0.2400770  142.0
+#&gt; 24  8233 3518.440 0.1618650  142.0
+#&gt; 25  6360 1977.390 0.2808870  740.0
+#&gt; 26  4193 1379.350 0.1794550  740.0
+#&gt; 27  7416 1916.240 0.1918020  740.0
+#&gt; 28  5246 1585.420 0.1330830  740.0
+#&gt; 29  6509 1851.210 0.2252140  890.0
+#&gt; 30  4895 1239.660 0.3412730  890.0
+#&gt; 31  6775 1728.140 0.3116460  890.0
+#&gt; 32  7894 1461.060 0.2760160  890.0
+#&gt; 33  5980 1426.760 0.1976530  950.0
+#&gt; 34  5318  990.388 0.3266350  950.0
+#&gt; 35  7392 1350.760 0.1541920  950.0
+#&gt; 36  7894 1461.060 0.2760160  950.0
+#&gt; 37  3469 1376.700 0.1769690  100.0
+#&gt; 38  1468  476.322 0.4387120  100.0
+#&gt; 39  3524 1189.460 0.1635860  100.0
+#&gt; 40  5267 1644.960 0.2538320  100.0
+#&gt; 41  5048  941.543 0.3286410 1300.0
+#&gt; 42  1016  308.642 0.2300810 1300.0
+#&gt; 43  5605 1145.690 0.4641250 1300.0
+#&gt; 44  8793 2280.490 0.4204770 1300.0
+#&gt; 45  3475 1174.110 0.2007440  580.0
+#&gt; 46  1651  597.808 0.2626510  580.0
+#&gt; 47  5514 1455.880 0.1824530  580.0
+#&gt; 48  9718 1485.580 0.2004470  580.0
+#&gt; attr(,&quot;scaled:center&quot;)
+#&gt;          area          peri         shape          perm 
+#&gt; -7187.7291667 -2682.2119375    -0.2181104  -415.4500000 
+#&gt; Calculating spline axis for variable 2 
+#&gt;     area     peri     shape   perm
+#&gt; 1   4990 2791.900 0.0903296    6.3
+#&gt; 2   7002 3892.600 0.1486220    6.3
+#&gt; 3   7558 3930.660 0.1833120    6.3
+#&gt; 4   7352 3869.320 0.1170630    6.3
+#&gt; 5   7943 3948.540 0.1224170   17.1
+#&gt; 6   7979 4010.150 0.1670450   17.1
+#&gt; 7   9333 4345.750 0.1896510   17.1
+#&gt; 8   8209 4344.750 0.1641270   17.1
+#&gt; 9   8393 3682.040 0.2036540  119.0
+#&gt; 10  6425 3098.650 0.1623940  119.0
+#&gt; 11  9364 4480.050 0.1509440  119.0
+#&gt; 12  8624 3986.240 0.1481410  119.0
+#&gt; 13 10651 4036.540 0.2285950   82.4
+#&gt; 14  8868 3518.040 0.2316230   82.4
+#&gt; 15  9417 3999.370 0.1725670   82.4
+#&gt; 16  8874 3629.070 0.1534810   82.4
+#&gt; 17 10962 4608.660 0.2043140   58.6
+#&gt; 18 10743 4787.620 0.2627270   58.6
+#&gt; 19 11878 4864.220 0.2000710   58.6
+#&gt; 20  9867 4479.410 0.1448100   58.6
+#&gt; 21  7838 3428.740 0.1138520  142.0
+#&gt; 22 11876 4353.140 0.2910290  142.0
+#&gt; 23 12212 4697.650 0.2400770  142.0
+#&gt; 24  8233 3518.440 0.1618650  142.0
+#&gt; 25  6360 1977.390 0.2808870  740.0
+#&gt; 26  4193 1379.350 0.1794550  740.0
+#&gt; 27  7416 1916.240 0.1918020  740.0
+#&gt; 28  5246 1585.420 0.1330830  740.0
+#&gt; 29  6509 1851.210 0.2252140  890.0
+#&gt; 30  4895 1239.660 0.3412730  890.0
+#&gt; 31  6775 1728.140 0.3116460  890.0
+#&gt; 32  7894 1461.060 0.2760160  890.0
+#&gt; 33  5980 1426.760 0.1976530  950.0
+#&gt; 34  5318  990.388 0.3266350  950.0
+#&gt; 35  7392 1350.760 0.1541920  950.0
+#&gt; 36  7894 1461.060 0.2760160  950.0
+#&gt; 37  3469 1376.700 0.1769690  100.0
+#&gt; 38  1468  476.322 0.4387120  100.0
+#&gt; 39  3524 1189.460 0.1635860  100.0
+#&gt; 40  5267 1644.960 0.2538320  100.0
+#&gt; 41  5048  941.543 0.3286410 1300.0
+#&gt; 42  1016  308.642 0.2300810 1300.0
+#&gt; 43  5605 1145.690 0.4641250 1300.0
+#&gt; 44  8793 2280.490 0.4204770 1300.0
+#&gt; 45  3475 1174.110 0.2007440  580.0
+#&gt; 46  1651  597.808 0.2626510  580.0
+#&gt; 47  5514 1455.880 0.1824530  580.0
+#&gt; 48  9718 1485.580 0.2004470  580.0
+#&gt; attr(,&quot;scaled:center&quot;)
+#&gt;          area          peri         shape          perm 
+#&gt; -7187.7291667 -2682.2119375    -0.2181104  -415.4500000 
+#&gt; Calculating spline axis for variable 3 
+#&gt;     area     peri     shape   perm
+#&gt; 1   4990 2791.900 0.0903296    6.3
+#&gt; 2   7002 3892.600 0.1486220    6.3
+#&gt; 3   7558 3930.660 0.1833120    6.3
+#&gt; 4   7352 3869.320 0.1170630    6.3
+#&gt; 5   7943 3948.540 0.1224170   17.1
+#&gt; 6   7979 4010.150 0.1670450   17.1
+#&gt; 7   9333 4345.750 0.1896510   17.1
+#&gt; 8   8209 4344.750 0.1641270   17.1
+#&gt; 9   8393 3682.040 0.2036540  119.0
+#&gt; 10  6425 3098.650 0.1623940  119.0
+#&gt; 11  9364 4480.050 0.1509440  119.0
+#&gt; 12  8624 3986.240 0.1481410  119.0
+#&gt; 13 10651 4036.540 0.2285950   82.4
+#&gt; 14  8868 3518.040 0.2316230   82.4
+#&gt; 15  9417 3999.370 0.1725670   82.4
+#&gt; 16  8874 3629.070 0.1534810   82.4
+#&gt; 17 10962 4608.660 0.2043140   58.6
+#&gt; 18 10743 4787.620 0.2627270   58.6
+#&gt; 19 11878 4864.220 0.2000710   58.6
+#&gt; 20  9867 4479.410 0.1448100   58.6
+#&gt; 21  7838 3428.740 0.1138520  142.0
+#&gt; 22 11876 4353.140 0.2910290  142.0
+#&gt; 23 12212 4697.650 0.2400770  142.0
+#&gt; 24  8233 3518.440 0.1618650  142.0
+#&gt; 25  6360 1977.390 0.2808870  740.0
+#&gt; 26  4193 1379.350 0.1794550  740.0
+#&gt; 27  7416 1916.240 0.1918020  740.0
+#&gt; 28  5246 1585.420 0.1330830  740.0
+#&gt; 29  6509 1851.210 0.2252140  890.0
+#&gt; 30  4895 1239.660 0.3412730  890.0
+#&gt; 31  6775 1728.140 0.3116460  890.0
+#&gt; 32  7894 1461.060 0.2760160  890.0
+#&gt; 33  5980 1426.760 0.1976530  950.0
+#&gt; 34  5318  990.388 0.3266350  950.0
+#&gt; 35  7392 1350.760 0.1541920  950.0
+#&gt; 36  7894 1461.060 0.2760160  950.0
+#&gt; 37  3469 1376.700 0.1769690  100.0
+#&gt; 38  1468  476.322 0.4387120  100.0
+#&gt; 39  3524 1189.460 0.1635860  100.0
+#&gt; 40  5267 1644.960 0.2538320  100.0
+#&gt; 41  5048  941.543 0.3286410 1300.0
+#&gt; 42  1016  308.642 0.2300810 1300.0
+#&gt; 43  5605 1145.690 0.4641250 1300.0
+#&gt; 44  8793 2280.490 0.4204770 1300.0
+#&gt; 45  3475 1174.110 0.2007440  580.0
+#&gt; 46  1651  597.808 0.2626510  580.0
+#&gt; 47  5514 1455.880 0.1824530  580.0
+#&gt; 48  9718 1485.580 0.2004470  580.0
+#&gt; attr(,&quot;scaled:center&quot;)
+#&gt;          area          peri         shape          perm 
+#&gt; -7187.7291667 -2682.2119375    -0.2181104  -415.4500000 
+#&gt; Calculating spline axis for variable 4 
+#&gt;     area     peri     shape   perm
+#&gt; 1   4990 2791.900 0.0903296    6.3
+#&gt; 2   7002 3892.600 0.1486220    6.3
+#&gt; 3   7558 3930.660 0.1833120    6.3
+#&gt; 4   7352 3869.320 0.1170630    6.3
+#&gt; 5   7943 3948.540 0.1224170   17.1
+#&gt; 6   7979 4010.150 0.1670450   17.1
+#&gt; 7   9333 4345.750 0.1896510   17.1
+#&gt; 8   8209 4344.750 0.1641270   17.1
+#&gt; 9   8393 3682.040 0.2036540  119.0
+#&gt; 10  6425 3098.650 0.1623940  119.0
+#&gt; 11  9364 4480.050 0.1509440  119.0
+#&gt; 12  8624 3986.240 0.1481410  119.0
+#&gt; 13 10651 4036.540 0.2285950   82.4
+#&gt; 14  8868 3518.040 0.2316230   82.4
+#&gt; 15  9417 3999.370 0.1725670   82.4
+#&gt; 16  8874 3629.070 0.1534810   82.4
+#&gt; 17 10962 4608.660 0.2043140   58.6
+#&gt; 18 10743 4787.620 0.2627270   58.6
+#&gt; 19 11878 4864.220 0.2000710   58.6
+#&gt; 20  9867 4479.410 0.1448100   58.6
+#&gt; 21  7838 3428.740 0.1138520  142.0
+#&gt; 22 11876 4353.140 0.2910290  142.0
+#&gt; 23 12212 4697.650 0.2400770  142.0
+#&gt; 24  8233 3518.440 0.1618650  142.0
+#&gt; 25  6360 1977.390 0.2808870  740.0
+#&gt; 26  4193 1379.350 0.1794550  740.0
+#&gt; 27  7416 1916.240 0.1918020  740.0
+#&gt; 28  5246 1585.420 0.1330830  740.0
+#&gt; 29  6509 1851.210 0.2252140  890.0
+#&gt; 30  4895 1239.660 0.3412730  890.0
+#&gt; 31  6775 1728.140 0.3116460  890.0
+#&gt; 32  7894 1461.060 0.2760160  890.0
+#&gt; 33  5980 1426.760 0.1976530  950.0
+#&gt; 34  5318  990.388 0.3266350  950.0
+#&gt; 35  7392 1350.760 0.1541920  950.0
+#&gt; 36  7894 1461.060 0.2760160  950.0
+#&gt; 37  3469 1376.700 0.1769690  100.0
+#&gt; 38  1468  476.322 0.4387120  100.0
+#&gt; 39  3524 1189.460 0.1635860  100.0
+#&gt; 40  5267 1644.960 0.2538320  100.0
+#&gt; 41  5048  941.543 0.3286410 1300.0
+#&gt; 42  1016  308.642 0.2300810 1300.0
+#&gt; 43  5605 1145.690 0.4641250 1300.0
+#&gt; 44  8793 2280.490 0.4204770 1300.0
+#&gt; 45  3475 1174.110 0.2007440  580.0
+#&gt; 46  1651  597.808 0.2626510  580.0
+#&gt; 47  5514 1455.880 0.1824530  580.0
+#&gt; 48  9718 1485.580 0.2004470  580.0
+#&gt; attr(,&quot;scaled:center&quot;)
+#&gt;          area          peri         shape          perm 
+#&gt; -7187.7291667 -2682.2119375    -0.2181104  -415.4500000</code></pre>
+</div>
+<div id="principal-coordinate-analysis-pco-biplots" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Principal Coordinate
+Analysis (PCO) biplots</h1>
+<p>Let <span class="math inline">\(\mathbf{\tilde\Delta}\)</span> be the
+<span class="math inline">\(n \times n\)</span> matrix containing the
+values <span class="math inline">\(-\frac{1}{2}\delta_{ij}^2\)</span>
+where <span class="math inline">\(\delta_{ij}\)</span> represent the
+dissimilarity between objects <span class="math inline">\(i\)</span> and
+<span class="math inline">\(j\)</span>. If it is possible to find a set
+of coordinates <span class="math inline">\(\mathbf{Y}:n\times m\)</span>
+where typically <span class="math inline">\(m = n-1\)</span> such that
+the Euclidean distances between the rows of <span class="math inline">\(\mathbf{Y}\)</span> exactly match the
+dissimilarities <span class="math inline">\(\delta_{ij}\)</span>, the
+dissimilarity is known as a Euclidean embeddable distance metric. <span class="citation">J. C. Gower (1982)</span> shows that if the distances
+<span class="math inline">\(\delta_{ij}\)</span> are Euclidean
+embeddable, then</p>
+<p><span class="math display">\[
+(\mathbf{I}-\mathbf{1s}&#39;)\mathbf{\tilde\Delta}
+(\mathbf{I}-\mathbf{s1}&#39;)
+\]</span></p>
+<p>is positive semi-definite.</p>
+<p>The Euclidean representation of the samples is obtained as <span class="math inline">\(\mathbf{Y=V\Lambda}^{\frac{1}{2}}\)</span> where
+<span class="math inline">\((\mathbf{I}-\mathbf{1s}&#39;)\mathbf{\tilde\Delta}
+(\mathbf{I}-\mathbf{s1}&#39;) = \mathbf{V \Lambda V&#39;}\)</span>.
+Since the coordinates in <span class="math inline">\(\mathbf{Y}\)</span>
+is already referred to their principal axes with <span class="math inline">\(\mathbf{Y&#39;Y=\Lambda}\)</span>, the
+representation of the samples in a 2D biplot is obtained from the first
+two columns of <span class="math inline">\(\mathbf{Y}\)</span>.</p>
+<p>In addition to the exact biplot axis representations discussed in
+<span class="citation">J. C. Gower, Lubbe, and Roux (2011)</span>
+approximate axes can be obtained. Linear axes are fitted with the
+regression method. The variables in the data matrix <span class="math inline">\(\mathbf{X}:n \times p\)</span> can be represented
+as biplot axes in the PCO biplot with the sample points <span class="math inline">\(\mathbf{Z=V\Lambda}^{\frac{1}{2}}\mathbf{J}_2\)</span>
+according to the regression method discussed in section 2 above.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">biplot</span>(rock, <span class="at">scale =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">PCO</span>() <span class="sc">|&gt;</span> <span class="fu">plot</span>()</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<p>Using B-splines instead of linear regression provides the user with
+more flexibility. This is achieved by setting the argument
+<code>axes = &quot;splines&quot;</code>.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">biplot</span>(rock, <span class="at">scale =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">PCO</span>(<span class="at">axes =</span> <span class="st">&quot;splines&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">plot</span>()</span></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAqAAAAJACAMAAABlpiR1AAABpFBMVEUAAAAAAEgAAP+amoCas4Cas7Ozs7Ozs8Gzs82zuM2zwcGzwc2zwdqzwd2zxMWzzee2udO2x+e4s764s8G4s8i4uM24zfK5s7O5trO6uLy61PK8s8G8s828uLO81fK82t6+2vK/x77Bs7PBs8HBs83BtrnBvM3BwcHBwc3BwdrBzcXBzcjBzd7BzefB1NPB2trB2t3B2vLB3f/ExbPIs7bIs7jIurnIzsHI5//Ns7PNs8HNs83NvcHNwbPNwdrNzbPNzcHNzc3NzdrNzefN2vLN59rN5/LN5//TubbTwcHT1MHT8v/VvLPVzbPavLzawbPawcHawc3azbPazcHazc3azdra2sHa2s3a2tra587a59ra5//a8ufa8vLa8v/d2sHewbPe2sHe/97nzbPnzcHnzc3n2sHn2trn2ufn583n5/Ln5//n8trn8v/n/+fn//Ln///y07ny1Lry2r/y2sHy2s3y2try583y59ry5+fy8try8ufy8vLy8v/y//Ly////58T/583/59r/5+f/8tP/8tT/8tr/8uf/8vL//+f///L///+TRNJbAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAgAElEQVR4nO2diZ/jyFmGZxuoaUiDue+zdyAZYALm7hnYJGyIuXsnwIYjMYc7uySbowEvyS5hGwUwsf1Po5Jkq/RVySqV6vhkvc/vt7M9tqx63XqmDqlUerQHgDGPUgcA4BQQFLAGggLWQFDAGggKWANBAWsgKGANBAWsgaCANRAUsAaCAtZAUMAaCApYA0EBayAoYA0EBayBoIA1EBSwBoIC1kBQwBoIClgDQQFrIChgDQQFrIGggDUQFLAGggLWQFDAGggKWANBAWsgKGANBAWsgaCANRAUsAaCAtZAUMAaCApYA0EBayAoYA0EBayBoIA1EBSwBoIC1kBQwBoIClgDQQFrIChgDQQFrIGggDUQFLAGggLWQFDAGggKWANBAWsgKGANBAWsgaCANRAUsAaCAtZAUMAaCApYA0EBayAoYA0EBayBoIA1EBSwBoIC1kBQwBoIClgDQQFrIChgDQQFrIGggDUQFLAGggLWQFDAGggKWMNZ0EeAFWkkSFKqHZyz8USE3DkEpXDOxpKgfkJQjVDZhCTQvlMS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" /><!-- --></p>
+<pre><code>#&gt; Calculating spline axis for variable 1 
+#&gt;     area     peri     shape   perm
+#&gt; 1   4990 2791.900 0.0903296    6.3
+#&gt; 2   7002 3892.600 0.1486220    6.3
+#&gt; 3   7558 3930.660 0.1833120    6.3
+#&gt; 4   7352 3869.320 0.1170630    6.3
+#&gt; 5   7943 3948.540 0.1224170   17.1
+#&gt; 6   7979 4010.150 0.1670450   17.1
+#&gt; 7   9333 4345.750 0.1896510   17.1
+#&gt; 8   8209 4344.750 0.1641270   17.1
+#&gt; 9   8393 3682.040 0.2036540  119.0
+#&gt; 10  6425 3098.650 0.1623940  119.0
+#&gt; 11  9364 4480.050 0.1509440  119.0
+#&gt; 12  8624 3986.240 0.1481410  119.0
+#&gt; 13 10651 4036.540 0.2285950   82.4
+#&gt; 14  8868 3518.040 0.2316230   82.4
+#&gt; 15  9417 3999.370 0.1725670   82.4
+#&gt; 16  8874 3629.070 0.1534810   82.4
+#&gt; 17 10962 4608.660 0.2043140   58.6
+#&gt; 18 10743 4787.620 0.2627270   58.6
+#&gt; 19 11878 4864.220 0.2000710   58.6
+#&gt; 20  9867 4479.410 0.1448100   58.6
+#&gt; 21  7838 3428.740 0.1138520  142.0
+#&gt; 22 11876 4353.140 0.2910290  142.0
+#&gt; 23 12212 4697.650 0.2400770  142.0
+#&gt; 24  8233 3518.440 0.1618650  142.0
+#&gt; 25  6360 1977.390 0.2808870  740.0
+#&gt; 26  4193 1379.350 0.1794550  740.0
+#&gt; 27  7416 1916.240 0.1918020  740.0
+#&gt; 28  5246 1585.420 0.1330830  740.0
+#&gt; 29  6509 1851.210 0.2252140  890.0
+#&gt; 30  4895 1239.660 0.3412730  890.0
+#&gt; 31  6775 1728.140 0.3116460  890.0
+#&gt; 32  7894 1461.060 0.2760160  890.0
+#&gt; 33  5980 1426.760 0.1976530  950.0
+#&gt; 34  5318  990.388 0.3266350  950.0
+#&gt; 35  7392 1350.760 0.1541920  950.0
+#&gt; 36  7894 1461.060 0.2760160  950.0
+#&gt; 37  3469 1376.700 0.1769690  100.0
+#&gt; 38  1468  476.322 0.4387120  100.0
+#&gt; 39  3524 1189.460 0.1635860  100.0
+#&gt; 40  5267 1644.960 0.2538320  100.0
+#&gt; 41  5048  941.543 0.3286410 1300.0
+#&gt; 42  1016  308.642 0.2300810 1300.0
+#&gt; 43  5605 1145.690 0.4641250 1300.0
+#&gt; 44  8793 2280.490 0.4204770 1300.0
+#&gt; 45  3475 1174.110 0.2007440  580.0
+#&gt; 46  1651  597.808 0.2626510  580.0
+#&gt; 47  5514 1455.880 0.1824530  580.0
+#&gt; 48  9718 1485.580 0.2004470  580.0
+#&gt; attr(,&quot;scaled:center&quot;)
+#&gt;          area          peri         shape          perm 
+#&gt; -7187.7291667 -2682.2119375    -0.2181104  -415.4500000 
+#&gt; attr(,&quot;scaled:scale&quot;)
+#&gt;         area         peri        shape         perm 
+#&gt; 3.725992e-04 6.984893e-04 1.197656e+01 2.284053e-03 
+#&gt; Calculating spline axis for variable 2 
+#&gt;     area     peri     shape   perm
+#&gt; 1   4990 2791.900 0.0903296    6.3
+#&gt; 2   7002 3892.600 0.1486220    6.3
+#&gt; 3   7558 3930.660 0.1833120    6.3
+#&gt; 4   7352 3869.320 0.1170630    6.3
+#&gt; 5   7943 3948.540 0.1224170   17.1
+#&gt; 6   7979 4010.150 0.1670450   17.1
+#&gt; 7   9333 4345.750 0.1896510   17.1
+#&gt; 8   8209 4344.750 0.1641270   17.1
+#&gt; 9   8393 3682.040 0.2036540  119.0
+#&gt; 10  6425 3098.650 0.1623940  119.0
+#&gt; 11  9364 4480.050 0.1509440  119.0
+#&gt; 12  8624 3986.240 0.1481410  119.0
+#&gt; 13 10651 4036.540 0.2285950   82.4
+#&gt; 14  8868 3518.040 0.2316230   82.4
+#&gt; 15  9417 3999.370 0.1725670   82.4
+#&gt; 16  8874 3629.070 0.1534810   82.4
+#&gt; 17 10962 4608.660 0.2043140   58.6
+#&gt; 18 10743 4787.620 0.2627270   58.6
+#&gt; 19 11878 4864.220 0.2000710   58.6
+#&gt; 20  9867 4479.410 0.1448100   58.6
+#&gt; 21  7838 3428.740 0.1138520  142.0
+#&gt; 22 11876 4353.140 0.2910290  142.0
+#&gt; 23 12212 4697.650 0.2400770  142.0
+#&gt; 24  8233 3518.440 0.1618650  142.0
+#&gt; 25  6360 1977.390 0.2808870  740.0
+#&gt; 26  4193 1379.350 0.1794550  740.0
+#&gt; 27  7416 1916.240 0.1918020  740.0
+#&gt; 28  5246 1585.420 0.1330830  740.0
+#&gt; 29  6509 1851.210 0.2252140  890.0
+#&gt; 30  4895 1239.660 0.3412730  890.0
+#&gt; 31  6775 1728.140 0.3116460  890.0
+#&gt; 32  7894 1461.060 0.2760160  890.0
+#&gt; 33  5980 1426.760 0.1976530  950.0
+#&gt; 34  5318  990.388 0.3266350  950.0
+#&gt; 35  7392 1350.760 0.1541920  950.0
+#&gt; 36  7894 1461.060 0.2760160  950.0
+#&gt; 37  3469 1376.700 0.1769690  100.0
+#&gt; 38  1468  476.322 0.4387120  100.0
+#&gt; 39  3524 1189.460 0.1635860  100.0
+#&gt; 40  5267 1644.960 0.2538320  100.0
+#&gt; 41  5048  941.543 0.3286410 1300.0
+#&gt; 42  1016  308.642 0.2300810 1300.0
+#&gt; 43  5605 1145.690 0.4641250 1300.0
+#&gt; 44  8793 2280.490 0.4204770 1300.0
+#&gt; 45  3475 1174.110 0.2007440  580.0
+#&gt; 46  1651  597.808 0.2626510  580.0
+#&gt; 47  5514 1455.880 0.1824530  580.0
+#&gt; 48  9718 1485.580 0.2004470  580.0
+#&gt; attr(,&quot;scaled:center&quot;)
+#&gt;          area          peri         shape          perm 
+#&gt; -7187.7291667 -2682.2119375    -0.2181104  -415.4500000 
+#&gt; attr(,&quot;scaled:scale&quot;)
+#&gt;         area         peri        shape         perm 
+#&gt; 3.725992e-04 6.984893e-04 1.197656e+01 2.284053e-03 
+#&gt; Calculating spline axis for variable 3 
+#&gt;     area     peri     shape   perm
+#&gt; 1   4990 2791.900 0.0903296    6.3
+#&gt; 2   7002 3892.600 0.1486220    6.3
+#&gt; 3   7558 3930.660 0.1833120    6.3
+#&gt; 4   7352 3869.320 0.1170630    6.3
+#&gt; 5   7943 3948.540 0.1224170   17.1
+#&gt; 6   7979 4010.150 0.1670450   17.1
+#&gt; 7   9333 4345.750 0.1896510   17.1
+#&gt; 8   8209 4344.750 0.1641270   17.1
+#&gt; 9   8393 3682.040 0.2036540  119.0
+#&gt; 10  6425 3098.650 0.1623940  119.0
+#&gt; 11  9364 4480.050 0.1509440  119.0
+#&gt; 12  8624 3986.240 0.1481410  119.0
+#&gt; 13 10651 4036.540 0.2285950   82.4
+#&gt; 14  8868 3518.040 0.2316230   82.4
+#&gt; 15  9417 3999.370 0.1725670   82.4
+#&gt; 16  8874 3629.070 0.1534810   82.4
+#&gt; 17 10962 4608.660 0.2043140   58.6
+#&gt; 18 10743 4787.620 0.2627270   58.6
+#&gt; 19 11878 4864.220 0.2000710   58.6
+#&gt; 20  9867 4479.410 0.1448100   58.6
+#&gt; 21  7838 3428.740 0.1138520  142.0
+#&gt; 22 11876 4353.140 0.2910290  142.0
+#&gt; 23 12212 4697.650 0.2400770  142.0
+#&gt; 24  8233 3518.440 0.1618650  142.0
+#&gt; 25  6360 1977.390 0.2808870  740.0
+#&gt; 26  4193 1379.350 0.1794550  740.0
+#&gt; 27  7416 1916.240 0.1918020  740.0
+#&gt; 28  5246 1585.420 0.1330830  740.0
+#&gt; 29  6509 1851.210 0.2252140  890.0
+#&gt; 30  4895 1239.660 0.3412730  890.0
+#&gt; 31  6775 1728.140 0.3116460  890.0
+#&gt; 32  7894 1461.060 0.2760160  890.0
+#&gt; 33  5980 1426.760 0.1976530  950.0
+#&gt; 34  5318  990.388 0.3266350  950.0
+#&gt; 35  7392 1350.760 0.1541920  950.0
+#&gt; 36  7894 1461.060 0.2760160  950.0
+#&gt; 37  3469 1376.700 0.1769690  100.0
+#&gt; 38  1468  476.322 0.4387120  100.0
+#&gt; 39  3524 1189.460 0.1635860  100.0
+#&gt; 40  5267 1644.960 0.2538320  100.0
+#&gt; 41  5048  941.543 0.3286410 1300.0
+#&gt; 42  1016  308.642 0.2300810 1300.0
+#&gt; 43  5605 1145.690 0.4641250 1300.0
+#&gt; 44  8793 2280.490 0.4204770 1300.0
+#&gt; 45  3475 1174.110 0.2007440  580.0
+#&gt; 46  1651  597.808 0.2626510  580.0
+#&gt; 47  5514 1455.880 0.1824530  580.0
+#&gt; 48  9718 1485.580 0.2004470  580.0
+#&gt; attr(,&quot;scaled:center&quot;)
+#&gt;          area          peri         shape          perm 
+#&gt; -7187.7291667 -2682.2119375    -0.2181104  -415.4500000 
+#&gt; attr(,&quot;scaled:scale&quot;)
+#&gt;         area         peri        shape         perm 
+#&gt; 3.725992e-04 6.984893e-04 1.197656e+01 2.284053e-03 
+#&gt; Calculating spline axis for variable 4 
+#&gt;     area     peri     shape   perm
+#&gt; 1   4990 2791.900 0.0903296    6.3
+#&gt; 2   7002 3892.600 0.1486220    6.3
+#&gt; 3   7558 3930.660 0.1833120    6.3
+#&gt; 4   7352 3869.320 0.1170630    6.3
+#&gt; 5   7943 3948.540 0.1224170   17.1
+#&gt; 6   7979 4010.150 0.1670450   17.1
+#&gt; 7   9333 4345.750 0.1896510   17.1
+#&gt; 8   8209 4344.750 0.1641270   17.1
+#&gt; 9   8393 3682.040 0.2036540  119.0
+#&gt; 10  6425 3098.650 0.1623940  119.0
+#&gt; 11  9364 4480.050 0.1509440  119.0
+#&gt; 12  8624 3986.240 0.1481410  119.0
+#&gt; 13 10651 4036.540 0.2285950   82.4
+#&gt; 14  8868 3518.040 0.2316230   82.4
+#&gt; 15  9417 3999.370 0.1725670   82.4
+#&gt; 16  8874 3629.070 0.1534810   82.4
+#&gt; 17 10962 4608.660 0.2043140   58.6
+#&gt; 18 10743 4787.620 0.2627270   58.6
+#&gt; 19 11878 4864.220 0.2000710   58.6
+#&gt; 20  9867 4479.410 0.1448100   58.6
+#&gt; 21  7838 3428.740 0.1138520  142.0
+#&gt; 22 11876 4353.140 0.2910290  142.0
+#&gt; 23 12212 4697.650 0.2400770  142.0
+#&gt; 24  8233 3518.440 0.1618650  142.0
+#&gt; 25  6360 1977.390 0.2808870  740.0
+#&gt; 26  4193 1379.350 0.1794550  740.0
+#&gt; 27  7416 1916.240 0.1918020  740.0
+#&gt; 28  5246 1585.420 0.1330830  740.0
+#&gt; 29  6509 1851.210 0.2252140  890.0
+#&gt; 30  4895 1239.660 0.3412730  890.0
+#&gt; 31  6775 1728.140 0.3116460  890.0
+#&gt; 32  7894 1461.060 0.2760160  890.0
+#&gt; 33  5980 1426.760 0.1976530  950.0
+#&gt; 34  5318  990.388 0.3266350  950.0
+#&gt; 35  7392 1350.760 0.1541920  950.0
+#&gt; 36  7894 1461.060 0.2760160  950.0
+#&gt; 37  3469 1376.700 0.1769690  100.0
+#&gt; 38  1468  476.322 0.4387120  100.0
+#&gt; 39  3524 1189.460 0.1635860  100.0
+#&gt; 40  5267 1644.960 0.2538320  100.0
+#&gt; 41  5048  941.543 0.3286410 1300.0
+#&gt; 42  1016  308.642 0.2300810 1300.0
+#&gt; 43  5605 1145.690 0.4641250 1300.0
+#&gt; 44  8793 2280.490 0.4204770 1300.0
+#&gt; 45  3475 1174.110 0.2007440  580.0
+#&gt; 46  1651  597.808 0.2626510  580.0
+#&gt; 47  5514 1455.880 0.1824530  580.0
+#&gt; 48  9718 1485.580 0.2004470  580.0
+#&gt; attr(,&quot;scaled:center&quot;)
+#&gt;          area          peri         shape          perm 
+#&gt; -7187.7291667 -2682.2119375    -0.2181104  -415.4500000 
+#&gt; attr(,&quot;scaled:scale&quot;)
+#&gt;         area         peri        shape         perm 
+#&gt; 3.725992e-04 6.984893e-04 1.197656e+01 2.284053e-03</code></pre>
+<p>By default the distance metric used for the analysis is Euclidean
+distance. The user can also specify the distance matrix
+<code>Dmat</code> as an <span class="math inline">\(n \times n\)</span>
+matrix of a <code>dist</code> object. As illustration of a metric that
+is Euclidean embeddable, the Clark’s distance</p>
+<p><span class="math display">\[
+\delta_{ij}^2 =
+\sum_{k=1}^{p}\left(\frac{x_{ik}-x_{jk}}{x_{ik}+x_{jk}}\right)^2
+\]</span></p>
+<p>as defined by <span class="citation">John C. Gower and Ngouenet
+(2005)</span> is calculated below and used for constructing a PCO
+biplot. Note that the metric is only defined for strictly positive
+values, so that the data is scaled to values between <span class="math inline">\(1\)</span> and <span class="math inline">\(2\)</span>.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a>Clark.dist <span class="ot">&lt;-</span> <span class="cf">function</span>(X)</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>{</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(X)</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  p <span class="ot">&lt;-</span> <span class="fu">ncol</span>(X)</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  Dmat <span class="ot">&lt;-</span> <span class="fu">matrix</span> (<span class="dv">0</span>, <span class="at">nrow=</span>n, <span class="at">ncol=</span>n)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>(n<span class="dv">-1</span>))</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>    <span class="cf">for</span> (j <span class="cf">in</span> (i<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>n)</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>      Dmat[i,j] <span class="ot">&lt;-</span> <span class="fu">sum</span>(((X[i,] <span class="sc">-</span> X[j,])<span class="sc">/</span>(X[i,] <span class="sc">+</span> X[j,]))<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  <span class="fu">sqrt</span>(Dmat <span class="sc">+</span> <span class="fu">t</span>(Dmat))</span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>}</span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>my.data <span class="ot">&lt;-</span> <span class="fu">scale</span>(rock, <span class="at">center=</span><span class="fu">apply</span>(rock,<span class="dv">2</span>,min), <span class="at">scale=</span><span class="fu">diff</span>(<span class="fu">apply</span>(rock,<span class="dv">2</span>,range)))<span class="sc">+</span><span class="dv">1</span></span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="fu">biplot</span>(rock) <span class="sc">|&gt;</span> <span class="fu">PCO</span>(<span class="at">Dmat =</span> <span class="fu">Clark.dist</span> (rock), <span class="at">axes =</span> <span class="st">&quot;splines&quot;</span>) <span class="sc">|&gt;</span> <span class="fu">plot</span>()</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+<pre><code>#&gt; Calculating spline axis for variable 1 
+#&gt;     area     peri     shape   perm
+#&gt; 1   4990 2791.900 0.0903296    6.3
+#&gt; 2   7002 3892.600 0.1486220    6.3
+#&gt; 3   7558 3930.660 0.1833120    6.3
+#&gt; 4   7352 3869.320 0.1170630    6.3
+#&gt; 5   7943 3948.540 0.1224170   17.1
+#&gt; 6   7979 4010.150 0.1670450   17.1
+#&gt; 7   9333 4345.750 0.1896510   17.1
+#&gt; 8   8209 4344.750 0.1641270   17.1
+#&gt; 9   8393 3682.040 0.2036540  119.0
+#&gt; 10  6425 3098.650 0.1623940  119.0
+#&gt; 11  9364 4480.050 0.1509440  119.0
+#&gt; 12  8624 3986.240 0.1481410  119.0
+#&gt; 13 10651 4036.540 0.2285950   82.4
+#&gt; 14  8868 3518.040 0.2316230   82.4
+#&gt; 15  9417 3999.370 0.1725670   82.4
+#&gt; 16  8874 3629.070 0.1534810   82.4
+#&gt; 17 10962 4608.660 0.2043140   58.6
+#&gt; 18 10743 4787.620 0.2627270   58.6
+#&gt; 19 11878 4864.220 0.2000710   58.6
+#&gt; 20  9867 4479.410 0.1448100   58.6
+#&gt; 21  7838 3428.740 0.1138520  142.0
+#&gt; 22 11876 4353.140 0.2910290  142.0
+#&gt; 23 12212 4697.650 0.2400770  142.0
+#&gt; 24  8233 3518.440 0.1618650  142.0
+#&gt; 25  6360 1977.390 0.2808870  740.0
+#&gt; 26  4193 1379.350 0.1794550  740.0
+#&gt; 27  7416 1916.240 0.1918020  740.0
+#&gt; 28  5246 1585.420 0.1330830  740.0
+#&gt; 29  6509 1851.210 0.2252140  890.0
+#&gt; 30  4895 1239.660 0.3412730  890.0
+#&gt; 31  6775 1728.140 0.3116460  890.0
+#&gt; 32  7894 1461.060 0.2760160  890.0
+#&gt; 33  5980 1426.760 0.1976530  950.0
+#&gt; 34  5318  990.388 0.3266350  950.0
+#&gt; 35  7392 1350.760 0.1541920  950.0
+#&gt; 36  7894 1461.060 0.2760160  950.0
+#&gt; 37  3469 1376.700 0.1769690  100.0
+#&gt; 38  1468  476.322 0.4387120  100.0
+#&gt; 39  3524 1189.460 0.1635860  100.0
+#&gt; 40  5267 1644.960 0.2538320  100.0
+#&gt; 41  5048  941.543 0.3286410 1300.0
+#&gt; 42  1016  308.642 0.2300810 1300.0
+#&gt; 43  5605 1145.690 0.4641250 1300.0
+#&gt; 44  8793 2280.490 0.4204770 1300.0
+#&gt; 45  3475 1174.110 0.2007440  580.0
+#&gt; 46  1651  597.808 0.2626510  580.0
+#&gt; 47  5514 1455.880 0.1824530  580.0
+#&gt; 48  9718 1485.580 0.2004470  580.0
+#&gt; attr(,&quot;scaled:center&quot;)
+#&gt;          area          peri         shape          perm 
+#&gt; -7187.7291667 -2682.2119375    -0.2181104  -415.4500000 
+#&gt; Calculating spline axis for variable 2 
+#&gt;     area     peri     shape   perm
+#&gt; 1   4990 2791.900 0.0903296    6.3
+#&gt; 2   7002 3892.600 0.1486220    6.3
+#&gt; 3   7558 3930.660 0.1833120    6.3
+#&gt; 4   7352 3869.320 0.1170630    6.3
+#&gt; 5   7943 3948.540 0.1224170   17.1
+#&gt; 6   7979 4010.150 0.1670450   17.1
+#&gt; 7   9333 4345.750 0.1896510   17.1
+#&gt; 8   8209 4344.750 0.1641270   17.1
+#&gt; 9   8393 3682.040 0.2036540  119.0
+#&gt; 10  6425 3098.650 0.1623940  119.0
+#&gt; 11  9364 4480.050 0.1509440  119.0
+#&gt; 12  8624 3986.240 0.1481410  119.0
+#&gt; 13 10651 4036.540 0.2285950   82.4
+#&gt; 14  8868 3518.040 0.2316230   82.4
+#&gt; 15  9417 3999.370 0.1725670   82.4
+#&gt; 16  8874 3629.070 0.1534810   82.4
+#&gt; 17 10962 4608.660 0.2043140   58.6
+#&gt; 18 10743 4787.620 0.2627270   58.6
+#&gt; 19 11878 4864.220 0.2000710   58.6
+#&gt; 20  9867 4479.410 0.1448100   58.6
+#&gt; 21  7838 3428.740 0.1138520  142.0
+#&gt; 22 11876 4353.140 0.2910290  142.0
+#&gt; 23 12212 4697.650 0.2400770  142.0
+#&gt; 24  8233 3518.440 0.1618650  142.0
+#&gt; 25  6360 1977.390 0.2808870  740.0
+#&gt; 26  4193 1379.350 0.1794550  740.0
+#&gt; 27  7416 1916.240 0.1918020  740.0
+#&gt; 28  5246 1585.420 0.1330830  740.0
+#&gt; 29  6509 1851.210 0.2252140  890.0
+#&gt; 30  4895 1239.660 0.3412730  890.0
+#&gt; 31  6775 1728.140 0.3116460  890.0
+#&gt; 32  7894 1461.060 0.2760160  890.0
+#&gt; 33  5980 1426.760 0.1976530  950.0
+#&gt; 34  5318  990.388 0.3266350  950.0
+#&gt; 35  7392 1350.760 0.1541920  950.0
+#&gt; 36  7894 1461.060 0.2760160  950.0
+#&gt; 37  3469 1376.700 0.1769690  100.0
+#&gt; 38  1468  476.322 0.4387120  100.0
+#&gt; 39  3524 1189.460 0.1635860  100.0
+#&gt; 40  5267 1644.960 0.2538320  100.0
+#&gt; 41  5048  941.543 0.3286410 1300.0
+#&gt; 42  1016  308.642 0.2300810 1300.0
+#&gt; 43  5605 1145.690 0.4641250 1300.0
+#&gt; 44  8793 2280.490 0.4204770 1300.0
+#&gt; 45  3475 1174.110 0.2007440  580.0
+#&gt; 46  1651  597.808 0.2626510  580.0
+#&gt; 47  5514 1455.880 0.1824530  580.0
+#&gt; 48  9718 1485.580 0.2004470  580.0
+#&gt; attr(,&quot;scaled:center&quot;)
+#&gt;          area          peri         shape          perm 
+#&gt; -7187.7291667 -2682.2119375    -0.2181104  -415.4500000 
+#&gt; Calculating spline axis for variable 3 
+#&gt;     area     peri     shape   perm
+#&gt; 1   4990 2791.900 0.0903296    6.3
+#&gt; 2   7002 3892.600 0.1486220    6.3
+#&gt; 3   7558 3930.660 0.1833120    6.3
+#&gt; 4   7352 3869.320 0.1170630    6.3
+#&gt; 5   7943 3948.540 0.1224170   17.1
+#&gt; 6   7979 4010.150 0.1670450   17.1
+#&gt; 7   9333 4345.750 0.1896510   17.1
+#&gt; 8   8209 4344.750 0.1641270   17.1
+#&gt; 9   8393 3682.040 0.2036540  119.0
+#&gt; 10  6425 3098.650 0.1623940  119.0
+#&gt; 11  9364 4480.050 0.1509440  119.0
+#&gt; 12  8624 3986.240 0.1481410  119.0
+#&gt; 13 10651 4036.540 0.2285950   82.4
+#&gt; 14  8868 3518.040 0.2316230   82.4
+#&gt; 15  9417 3999.370 0.1725670   82.4
+#&gt; 16  8874 3629.070 0.1534810   82.4
+#&gt; 17 10962 4608.660 0.2043140   58.6
+#&gt; 18 10743 4787.620 0.2627270   58.6
+#&gt; 19 11878 4864.220 0.2000710   58.6
+#&gt; 20  9867 4479.410 0.1448100   58.6
+#&gt; 21  7838 3428.740 0.1138520  142.0
+#&gt; 22 11876 4353.140 0.2910290  142.0
+#&gt; 23 12212 4697.650 0.2400770  142.0
+#&gt; 24  8233 3518.440 0.1618650  142.0
+#&gt; 25  6360 1977.390 0.2808870  740.0
+#&gt; 26  4193 1379.350 0.1794550  740.0
+#&gt; 27  7416 1916.240 0.1918020  740.0
+#&gt; 28  5246 1585.420 0.1330830  740.0
+#&gt; 29  6509 1851.210 0.2252140  890.0
+#&gt; 30  4895 1239.660 0.3412730  890.0
+#&gt; 31  6775 1728.140 0.3116460  890.0
+#&gt; 32  7894 1461.060 0.2760160  890.0
+#&gt; 33  5980 1426.760 0.1976530  950.0
+#&gt; 34  5318  990.388 0.3266350  950.0
+#&gt; 35  7392 1350.760 0.1541920  950.0
+#&gt; 36  7894 1461.060 0.2760160  950.0
+#&gt; 37  3469 1376.700 0.1769690  100.0
+#&gt; 38  1468  476.322 0.4387120  100.0
+#&gt; 39  3524 1189.460 0.1635860  100.0
+#&gt; 40  5267 1644.960 0.2538320  100.0
+#&gt; 41  5048  941.543 0.3286410 1300.0
+#&gt; 42  1016  308.642 0.2300810 1300.0
+#&gt; 43  5605 1145.690 0.4641250 1300.0
+#&gt; 44  8793 2280.490 0.4204770 1300.0
+#&gt; 45  3475 1174.110 0.2007440  580.0
+#&gt; 46  1651  597.808 0.2626510  580.0
+#&gt; 47  5514 1455.880 0.1824530  580.0
+#&gt; 48  9718 1485.580 0.2004470  580.0
+#&gt; attr(,&quot;scaled:center&quot;)
+#&gt;          area          peri         shape          perm 
+#&gt; -7187.7291667 -2682.2119375    -0.2181104  -415.4500000 
+#&gt; Calculating spline axis for variable 4 
+#&gt;     area     peri     shape   perm
+#&gt; 1   4990 2791.900 0.0903296    6.3
+#&gt; 2   7002 3892.600 0.1486220    6.3
+#&gt; 3   7558 3930.660 0.1833120    6.3
+#&gt; 4   7352 3869.320 0.1170630    6.3
+#&gt; 5   7943 3948.540 0.1224170   17.1
+#&gt; 6   7979 4010.150 0.1670450   17.1
+#&gt; 7   9333 4345.750 0.1896510   17.1
+#&gt; 8   8209 4344.750 0.1641270   17.1
+#&gt; 9   8393 3682.040 0.2036540  119.0
+#&gt; 10  6425 3098.650 0.1623940  119.0
+#&gt; 11  9364 4480.050 0.1509440  119.0
+#&gt; 12  8624 3986.240 0.1481410  119.0
+#&gt; 13 10651 4036.540 0.2285950   82.4
+#&gt; 14  8868 3518.040 0.2316230   82.4
+#&gt; 15  9417 3999.370 0.1725670   82.4
+#&gt; 16  8874 3629.070 0.1534810   82.4
+#&gt; 17 10962 4608.660 0.2043140   58.6
+#&gt; 18 10743 4787.620 0.2627270   58.6
+#&gt; 19 11878 4864.220 0.2000710   58.6
+#&gt; 20  9867 4479.410 0.1448100   58.6
+#&gt; 21  7838 3428.740 0.1138520  142.0
+#&gt; 22 11876 4353.140 0.2910290  142.0
+#&gt; 23 12212 4697.650 0.2400770  142.0
+#&gt; 24  8233 3518.440 0.1618650  142.0
+#&gt; 25  6360 1977.390 0.2808870  740.0
+#&gt; 26  4193 1379.350 0.1794550  740.0
+#&gt; 27  7416 1916.240 0.1918020  740.0
+#&gt; 28  5246 1585.420 0.1330830  740.0
+#&gt; 29  6509 1851.210 0.2252140  890.0
+#&gt; 30  4895 1239.660 0.3412730  890.0
+#&gt; 31  6775 1728.140 0.3116460  890.0
+#&gt; 32  7894 1461.060 0.2760160  890.0
+#&gt; 33  5980 1426.760 0.1976530  950.0
+#&gt; 34  5318  990.388 0.3266350  950.0
+#&gt; 35  7392 1350.760 0.1541920  950.0
+#&gt; 36  7894 1461.060 0.2760160  950.0
+#&gt; 37  3469 1376.700 0.1769690  100.0
+#&gt; 38  1468  476.322 0.4387120  100.0
+#&gt; 39  3524 1189.460 0.1635860  100.0
+#&gt; 40  5267 1644.960 0.2538320  100.0
+#&gt; 41  5048  941.543 0.3286410 1300.0
+#&gt; 42  1016  308.642 0.2300810 1300.0
+#&gt; 43  5605 1145.690 0.4641250 1300.0
+#&gt; 44  8793 2280.490 0.4204770 1300.0
+#&gt; 45  3475 1174.110 0.2007440  580.0
+#&gt; 46  1651  597.808 0.2626510  580.0
+#&gt; 47  5514 1455.880 0.1824530  580.0
+#&gt; 48  9718 1485.580 0.2004470  580.0
+#&gt; attr(,&quot;scaled:center&quot;)
+#&gt;          area          peri         shape          perm 
+#&gt; -7187.7291667 -2682.2119375    -0.2181104  -415.4500000</code></pre>
+<p>Alternatively, the user can specify a function which computes a
+distance matrix or <code>dist</code> object. The Manhattan distance is
+not Euclidean embeddable, but the square root of the distance is. The
+function <code>sqrtManhattan</code> is included as an example of a
+function computing a Euclidean embeddable <code>dist</code> object.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>sqrtManhattan</span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="co">#&gt; function (X) </span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a><span class="co">#&gt; {</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt;     sqrt(stats::dist(X, method = &quot;manhattan&quot;))</span></span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; }</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; &lt;bytecode: 0x000002271155f128&gt;</span></span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; &lt;environment: namespace:biplotEZ&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">biplot</span>(rock, <span class="at">scaled =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">PCO</span>(<span class="at">dist.func =</span> sqrtManhattan) <span class="sc">|&gt;</span> <span class="fu">plot</span>()</span></code></pre></div>
+<p><img src="data:image/png;base64,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" /><!-- --></p>
+</div>
+<div id="references" class="section level1 unnumbered">
+<h1 class="unnumbered">References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
+<div id="ref-Gower1982" class="csl-entry">
+Gower, J. C. 1982. <span>“Euclidean Distance Geometry.”</span>
+<em>Mathematical Scientist</em>, 1–14.
+</div>
+<div id="ref-UB2011" class="csl-entry">
+Gower, J. C., S. Lubbe, and N. J. le Roux. 2011. <em>Understanding
+Biplots.</em> Wiley.
+</div>
+<div id="ref-GowerRoger2005" class="csl-entry">
+Gower, John C, and Roger F Ngouenet. 2005. <span>“Nonlinearity Effects
+in Multidimensional Scaling.”</span> <em>Journal of Multivariate
+Analysis</em> 94 (2): 344–65.
+</div>
+</div>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -5,8 +5,9 @@
 \title{Aesthetics for supplementary (new) biplot samples}
 \usage{
 newsamples (bp,  col = "darkorange1", pch = 1, cex = 1, label = FALSE,
-label.col = NULL,label.cex = 0.75, label.side = "bottom", label.offset = 0.5,
-connected = FALSE, connect.col = "black", connect.lty=1, connect.lwd=1)
+label.name = NULL, label.col = NULL,label.cex = 0.75, label.side = "bottom", 
+label.offset = 0.5, connected = FALSE, connect.col = "black", connect.lty=1, 
+connect.lwd=1)
 }
 \arguments{
 \item{bp}{an object of class \code{biplot}.}
@@ -18,6 +19,8 @@ connected = FALSE, connect.col = "black", connect.lty=1, connect.lwd=1)
 \item{cex}{new sample character expansion, with default \code{1}.}
 
 \item{label}{logical, whether samples should be labelled or not, with default \code{FALSE}.}
+
+\item{label.name}{names for the new samples}
 
 \item{label.col}{vector of length number of new samples with the colour of the labels, defaulting to the
 colour of the sample points.}
@@ -59,4 +62,5 @@ This function allows formatting changes to new samples.
 \examples{
 biplot(data = iris[1:145,]) |> PCA() |> samples(col = "grey") |>
 interpolate(newdata = iris[146:150,]) |> newsamples(col = rainbow(6), pch=15) |> plot()
+
 }

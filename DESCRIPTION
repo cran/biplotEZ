@@ -1,17 +1,21 @@
 Package: biplotEZ
 Title: EZ-to-Use Biplots
-Version: 1.2.0
+Version: 2.0
 Authors@R: 
-    c(person("Sugnet", "Lubbe", , "muvisu@sun.ac.za", role = c("aut", "cre"),
+    c(person("Sugnet", "Lubbe", , "muvisu@sun.ac.za", role = c("aut", "cre","cph"),
            comment = c(ORCID = "0000-0003-2762-9944")),
-      person("Niël", "le Roux", , role = c("aut"),
+      person("Niël", "le Roux", , role = "aut",
        comment = c(ORCID = "0000-0002-1791-746X")),
-      person("Johané", "Nienkemper-Swanepoel", , role = c("aut"),
+      person("Johané", "Nienkemper-Swanepoel", , role = "aut",
        comment = c(ORCID = "0000-0001-6086-8272")),
-      person("Raeesa", "Ganey", , role = c("aut"),
+      person("Raeesa", "Ganey", , role = "aut",
         comment = c(ORCID = "0009-0008-6973-0999")),
-      person("Carel", "van der Merwe", , role = c("aut"),
-       comment = c(ORCID = "0000-0003-0676-8240")))
+      person("Ruan", "Buys", , role = "aut",
+       comment = c(ORCID = "0000-0001-8527-8631")),
+      person("Zoë-Mae", "Adams", , role="aut",
+        comment = c(ORCID = "0000-0003-3730-4887")),
+      person("Peter", "Manefeldt", , role="aut",
+      comment = c(ORCID = "0000-0002-8604-843X")))
 Description: Provides users with an EZ-to-use platform for representing data
              with biplots. Currently principal component analysis (PCA) and canonical variate
              analysis (CVA) biplots are included. This is accompanied by various formatting
@@ -21,18 +25,22 @@ Description: Provides users with an EZ-to-use platform for representing data
              (2011, ISBN: 978-0-470-01255-0) Understanding Biplots. Wiley: Chichester.
 License: MIT + file LICENSE
 Encoding: UTF-8
-RoxygenNote: 7.2.3
-Imports: ggplot2, ggrepel, grDevices, grid, withr
-Suggests: knitr, rmarkdown
+RoxygenNote: 7.3.2
 VignetteBuilder: knitr
-NeedsCompilation: no
-Packaged: 2023-11-28 09:11:42 UTC; slubbe
-Author: Sugnet Lubbe [aut, cre] (<https://orcid.org/0000-0003-2762-9944>),
+Config/testthat/edition: 3
+Suggests: caret, cluster, geometry, ggplot2, ggrepel, grid, knitr,
+        MASS, rgl, rmarkdown, testthat (>= 3.0.0)
+Imports: graphics, grDevices, plotrix, splines, stats, withr
+NeedsCompilation: yes
+Packaged: 2024-07-08 09:35:24 UTC; Sugnet
+Author: Sugnet Lubbe [aut, cre, cph] (<https://orcid.org/0000-0003-2762-9944>),
   Niël le Roux [aut] (<https://orcid.org/0000-0002-1791-746X>),
   Johané Nienkemper-Swanepoel [aut]
     (<https://orcid.org/0000-0001-6086-8272>),
   Raeesa Ganey [aut] (<https://orcid.org/0009-0008-6973-0999>),
-  Carel van der Merwe [aut] (<https://orcid.org/0000-0003-0676-8240>)
+  Ruan Buys [aut] (<https://orcid.org/0000-0001-8527-8631>),
+  Zoë-Mae Adams [aut] (<https://orcid.org/0000-0003-3730-4887>),
+  Peter Manefeldt [aut] (<https://orcid.org/0000-0002-8604-843X>)
 Maintainer: Sugnet Lubbe <muvisu@sun.ac.za>
 Repository: CRAN
-Date/Publication: 2023-11-28 10:30:02 UTC
+Date/Publication: 2024-07-08 10:00:02 UTC

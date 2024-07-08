@@ -2,7 +2,7 @@
 % Please edit documentation in R/biplot.R
 \name{summary.biplot}
 \alias{summary.biplot}
-\title{Generic summary function of objects of class biplot}
+\title{Generic summary function for objects of class biplot}
 \usage{
 \method{summary}{biplot}(
   object,
@@ -18,32 +18,33 @@
 \arguments{
 \item{object}{an object of class \code{biplot}.}
 
-\item{adequacy}{logical, whether variable adequacies should be reported.}
+\item{adequacy}{a logical value indicating whether variable adequacies should be reported, with default \code{TRUE}.}
 
-\item{axis.predictivity}{logical, whether axis predictivities should be reported.}
+\item{axis.predictivity}{a logical value indicating whether axis predictivities should be reported, with default \code{TRUE}.}
 
-\item{sample.predictivity}{logical, whether sample predictivities should be reported.}
+\item{sample.predictivity}{a logical value indicating whether sample predictivities should be reported, with default \code{TRUE}.}
 
-\item{class.predictivity}{logical, whether class predictivities should be reported
+\item{class.predictivity}{a logical value indicating whether class predictivities should be reported, with default \code{TRUE}
 (only applicable to objects of class \code{CVA}).}
 
-\item{within.class.axis.predictivity}{logical, whether within class axis predictivity
-should be reported(only applicable to objects
+\item{within.class.axis.predictivity}{a logical value indicating whether within class axis predictivity
+should be reported, with default \code{TRUE} (only applicable to objects
 of class \code{CVA}).}
 
-\item{within.class.sample.predictivity}{logical, whether within class sample predictivity
-should be reported(only applicable to objects
+\item{within.class.sample.predictivity}{a logical value indicating whether within class sample predictivity
+should be reported, with default \code{TRUE} (only applicable to objects
 of class \code{CVA}).}
 
 \item{...}{additional arguments.}
 }
 \value{
-no return value, called for side effects.
+This function will not produce a return value, it is called for side effects.
 }
 \description{
-Generic summary function of objects of class biplot
+This function is used to print summary output of the biplot. These summary outputs are related to measures of fit.
 }
 \examples{
 out <- biplot (iris[,1:4]) |> PCA() |> fit.measures()
 summary(out)
+
 }

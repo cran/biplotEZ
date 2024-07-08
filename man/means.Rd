@@ -4,8 +4,9 @@
 \alias{means}
 \title{Aesthetics for biplot class / group means}
 \usage{
-means (bp,  which = NULL, col = NULL, pch = 1, cex = 1, label = FALSE,
-label.col = NULL,label.cex = 0.75, label.side = "bottom", label.offset = 0.5)
+means (bp,  which = NULL, col = NULL, pch = 15, cex = 1, label = FALSE,
+label.col = NULL,label.cex = 0.75, label.side = "bottom", label.offset = 0.5,
+opacity = 1, shade.darker = TRUE)
 }
 \arguments{
 \item{bp}{an object of class \code{biplot}.}
@@ -30,6 +31,10 @@ the argument \code{pos} in \code{text()}, options are "bottom", "left", "top", "
 
 \item{label.offset}{offset of the label from the mean point. See ?text for a detailed explanation of the
 argument \code{offset}.}
+
+\item{opacity}{transparency of means.}
+
+\item{shade.darker}{automatically makes the colour of the means a darker shade than the default (or specified) colour}
 }
 \value{
 A list with the following components is available:
@@ -42,6 +47,7 @@ A list with the following components is available:
 \item{label.cex}{expansion of the label.}
 \item{label.side}{side at which to plot the label of means.}
 \item{label.offset}{offset of the label from the mean point.}
+\item{opacity}{transparency of means}
 }
 \description{
 This function allows formatting changes to class means or group means.

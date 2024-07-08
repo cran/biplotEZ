@@ -4,27 +4,30 @@
 \alias{axes}
 \title{Aesthetics for biplot axes}
 \usage{
-axes(bp, X.names=colnames(bp$X), which = 1:bp$p, col = grey(0.7),
-lwd = 1, lty = 1, label.dir = "Orthog", label.col = col, label.cex = 0.75,
- label.line = 0.1, ticks = 5, tick.col = col, tick.size = 1, tick.label = TRUE,
- tick.label.col = tick.col, tick.label.cex = 0.6, tick.label.side = "left",
- tick.label.offset = 0.5, tick.label.pos = 1, predict.col = col, predict.lwd = lwd,
-  predict.lty = lty, ax.names = X.names, orthogx = 0, orthogy = 0)
+axes(bp, X.names=colnames(bp$X), which = 1:bp$p, col = grey(0.7), lwd = 1, lty = 1,
+label.dir = "Orthog", label.col = col, label.cex = 0.75, label.line = 0.1, 
+label.offset=rep(0,4), ticks = 5, tick.col = col, tick.size = 1, tick.label = TRUE, 
+tick.label.side = "below", tick.label.col = tick.col, tick.label.cex = 0.6,
+predict.col = col, predict.lwd = lwd, predict.lty = lty, ax.names = X.names,
+orthogx = 0, orthogy = 0, vectors = FALSE, unit.circle=FALSE)
 }
 \arguments{
 \item{bp}{an object of class \code{biplot}.}
 
 \item{X.names}{refers to the column names of \code{bp} to specify which axes to label.}
 
-\item{which}{vector of columns to be displayed in the biplot, with default \code{1:bp$p}.}
+\item{which}{integer-valued vector specifying which biplot axes are shown
+in a biplot. By default all p biplot axes are shown.}
 
-\item{col}{axis colour, with default \code{grey(0.7)}.}
+\item{col}{vector of size p specifying colours of labels of biplot axes. The default is \code{grey(0.7)}.}
 
 \item{lwd}{axis line width, with default \code{1}.}
 
 \item{lty}{axis line type, with default \code{1}.}
 
-\item{label.dir}{direction of axis label, with default \code{Orthog}.}
+\item{label.dir}{One of "Orthog" (default), "Hor" or "Paral" specifying titles of
+axes to appear orthogonal to the side of the figure; always
+horizontally or always parallel to the side of the figure.}
 
 \item{label.col}{axis label colour, with default, \code{col}.}
 
@@ -32,23 +35,26 @@ lwd = 1, lty = 1, label.dir = "Orthog", label.col = col, label.cex = 0.75,
 
 \item{label.line}{axis label written on which margin line, with default \code{0.1}.}
 
-\item{ticks}{number of tick marks per axis, with default \code{5}.}
+\item{label.offset}{A four-component numeric vector controlling the distance a
+biplot axis title is printed from the side of the figure. Sides are
+numbered 1 to 4 according to R conventions clockwise starting
+from the bottom horizontal side. Default is rep(0,4)}
+
+\item{ticks}{integer-valued vector of size equal to the number of biplot axes
+to control the number of tickmarks on each individual biplot
+axis. Default is 5 for each axis.}
 
 \item{tick.col}{tick mark colour, with default \code{col}.}
 
-\item{tick.size}{tick mark size, with default \code{1}.}
+\item{tick.size}{positive integer-valued vector with specifying tick mark sizes, with default \code{1}.}
 
 \item{tick.label}{logical, whether axes should be labelled or not, with default \code{TRUE}.}
+
+\item{tick.label.side}{character vector specifying position of the tick label "below" or "above" the axis.}
 
 \item{tick.label.col}{tick mark label colour, with default \code{tick.col}.}
 
 \item{tick.label.cex}{tick mark label expansion, with default \code{0.6}.}
-
-\item{tick.label.side}{side of the tick mark label, with default \code{left}.}
-
-\item{tick.label.offset}{tick mark label offset, with default \code{0.5}.}
-
-\item{tick.label.pos}{side of the tick mark label, with default \code{below}.}
 
 \item{predict.col}{predicted samples colour, with default \code{col}.}
 
@@ -58,9 +64,15 @@ lwd = 1, lty = 1, label.dir = "Orthog", label.col = col, label.cex = 0.75,
 
 \item{ax.names}{vector of size \code{p} containing user defined names for the variables.}
 
-\item{orthogx}{the horizontal translation, with default \code{0}.}
+\item{orthogx}{numeric vector of size p specifying the x-coordinate of the parallel transformation of each axis.
+Defaults to zero for each axis. Only used when the dimension of the biplot is two.}
 
-\item{orthogy}{the vertical translation with default \code{0}.}
+\item{orthogy}{numeric vector of size p specifying the y-coordinate of the parallel transformation of each axis.
+Defaults to zero for each axis. Only used when the dimension of the biplot is two.}
+
+\item{vectors}{logical, whether calibrated axes should be displayed on the biplot}
+
+\item{unit.circle}{logical, whether a unit circle should be displayed on the biplot}
 }
 \value{
 A list with the following components is available:
@@ -76,17 +88,16 @@ A list with the following components is available:
 \item{tick.col}{vector of tick mark colours.}
 \item{tick.size}{vector of tick mark sizes.}
 \item{tick.label}{vector of logical values indicating whether axes are labelled.}
+\item{tick.label.side}{vector specifying position of the tick label "below" or "above" the axis.}
 \item{tick.label.col}{vector of tick mark label colours.}
 \item{tick.label.cex}{vector of tick mark label expansions.}
-\item{tick.label.side}{vector of the side of tick mark labels.}
-\item{tick.label.offset}{vector of tick mark label offsets.}
-\item{tick.label.pos}{vector of the side of tick mark labels.}
 \item{predict.col}{vector of colours for the predicted samples.}
 \item{predict.lty}{vector of line types for the predicted samples.}
 \item{predict.lwd}{vector of line widths for the predicted samples.}
 \item{names}{vector of variable names defined by the user.}
 \item{orthogx}{vector of the horisontal translations for each axis.}
 \item{orthogy}{vector of the vertical translations for each axis.}
+\item{calibrated.axis}{whether to plot calibrated axis}
 }
 \description{
 This function allows formatting changes to axes.

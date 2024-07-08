@@ -9,13 +9,18 @@
   exp.factor = 1.2,
   axis.predictivity = NULL,
   sample.predictivity = NULL,
+  zoom = FALSE,
+  xlim = NULL,
+  ylim = NULL,
   ...
 )
 }
 \arguments{
 \item{x}{An object of class \code{biplot}.}
 
-\item{exp.factor}{factor to expand plotting area beyond samples.}
+\item{exp.factor}{numeric value with default axes of the biplot. Larger values for zooming out and
+smaller values for zooming in with respect to sample points
+in the biplot display.}
 
 \item{axis.predictivity}{either logical or a numeric value between 0 and 1.
 If it is a numeric value, this value is used as threshold so that
@@ -28,6 +33,12 @@ If it is a numeric value, this value is used as threshold so that
 only samples with sample predictivity larger than the threshold is displayed.
 if \code{sample.predictivity = TRUE}, the sample size is shrinked in
 proportion with the sample predictivity.}
+
+\item{zoom}{logical, allowing the user to select an area to zoom into}
+
+\item{xlim}{horisontal limits of the plot}
+
+\item{ylim}{vertical limits of the plot}
 
 \item{...}{additional arguments.}
 }

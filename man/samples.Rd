@@ -4,9 +4,11 @@
 \alias{samples}
 \title{Aesthetics for biplot samples}
 \usage{
-samples (bp,  which = 1:bp$g, col = ez.col, pch = 3, cex = 1, label = FALSE,
-label.col = NULL,label.cex = 0.75, label.side = "bottom", label.offset = 0.5,
-connected = FALSE, connect.col = "black", connect.lty = 1, connect.lwd = 1)
+samples (bp,  which = 1:bp$g, col = ez.col, pch = 16, cex = 1,
+label = FALSE, label.name = NULL, label.col=NULL, label.cex = 0.75, 
+label.side = "bottom", label.offset = 0.5,
+connected=FALSE, connect.col = "black", connect.lty = 1, 
+connect.lwd = 1, opacity = 1)
 }
 \arguments{
 \item{bp}{an object of class \code{biplot}.}
@@ -19,7 +21,10 @@ connected = FALSE, connect.col = "black", connect.lty = 1, connect.lwd = 1)
 
 \item{cex}{sample character expansion, with default \code{1}.}
 
-\item{label}{logical, whether samples should be labelled or not, with default \code{FALSE}.}
+\item{label}{logical (\code{TRUE}, \code{FALSE}), whether samples should be labelled, with default \code{FALSE}. Alternatively, specify \code{"ggrepel"} for non-overlapping placement of labels.}
+
+\item{label.name}{vector of length number of samples, with default
+\code{NULL}, \code{rownames(bp)} are used.}
 
 \item{label.col}{vector of length number of samples with the colour of the labels, defaulting to the
 colour of the sample points.}
@@ -39,6 +44,8 @@ argument \code{offset}.}
 \item{connect.lty}{line type of the connecting line, with default \code{1}.}
 
 \item{connect.lwd}{line width of the connecting line, with default \code{1}.}
+
+\item{opacity}{opacity of sample points, with default 1 (opaque).}
 }
 \value{
 A list with the following components is available:
@@ -46,7 +53,9 @@ A list with the following components is available:
 \item{col}{colour of the samples.}
 \item{pch}{plotting character of the samples.}
 \item{cex}{expansion of the plotting character of the samples.}
-\item{label}{TRUE or FALSE, whether samples should be labelled.}
+\item{label}{TRUE or FALSE, whether samples should be labelled, with default
+\code{FALSE}.}
+\item{label.name}{If \code{NULL}, the row names will be used, with default \code{NULL}. Alternatively, a vector of length \code{n} should be used.}
 \item{label.col}{colour of the label.}
 \item{label.cex}{expansion of the label.}
 \item{label.side}{side at which to plot the label of samples.}
@@ -55,6 +64,7 @@ A list with the following components is available:
 \item{connect.col}{colour of the connecting line.}
 \item{connect.lty}{line type of the connecting line.}
 \item{connect.lwd}{line width of the connecting line.}
+\item{opacity}{opacity of sample points, with default 1 (opaque).}
 }
 \description{
 This function allows formatting changes to samples.
@@ -68,5 +78,14 @@ The arguments \code{label}, \code{label.cex}, \code{label.side} and \code{label.
 will be recycled n times or a vector of length n is expected.
 }
 \examples{
-biplot(iris[,1:4]) |> PCA() |> samples(col="purple",pch=15) |> plot()
+biplot(iris[,1:4]) |> PCA() |> samples(col="purple",pch=15, opacity=0.5) |> plot()
+biplot(iris[,1:4]) |> PCA() |> 
+  samples(col="purple",pch=NA, opacity=0.5, label = TRUE) |> plot()
+biplot(iris[,1:4]) |> PCA() |> 
+  samples(col="purple",pch=NA, opacity=0.5, label = TRUE, 
+          label.name = paste("s:",1:150, sep="")) |> 
+  plot()
+biplot(iris[,1:4]) |> PCA() |> 
+  samples(col="purple",pch=NA, opacity=0.5, label = "ggrepel") |> plot()
+
 }

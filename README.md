@@ -41,7 +41,7 @@ biplot (iris[,1:4], Title="Test PCA biplot") |> PCA() |> plot()
 While the PCA biplot provides a visual representation of the overall
 data set, optimally representing the variance in 1, 2 or 3 dimensions,
 the CVA biplot aims to optimally separate specified groups in the data.
-This is a basic example which shows you how to constrct a CVA biplot:
+This is a basic example which shows you how to construct a CVA biplot:
 
 ``` r
 biplot (iris[,1:4], Title="Test CVA biplot") |> CVA(classes=iris[,5]) |> plot()
@@ -55,9 +55,10 @@ the bells and whistles:
 ``` r
 biplot (iris[,1:4], group.aes=iris[,5]) |> PCA() |> 
   samples(col="gold", pch=15) |>
-  axes(which=2:3, col="cyan", label.cex=1.2, tick.col="blue", tick.label.col="purple") |>
+  axes(which=2:3, col="cyan", label.cex=1.2, tick.col="blue", 
+                                             tick.label.col="purple") |>
   alpha.bags (alpha=c(0.5,0.75,0.95), which=3, col="red", lty=1:3, lwd=3) |>
-  concentration.ellipse(alpha=0.9, which=1:2, col=c("green","olivedrab")) |>
+  ellipses(alpha=0.9, which=1:2, col=c("green","olivedrab")) |>
   legend.type(bags = TRUE, ellipses=TRUE) |>
   plot()
 #> Computing 0.5 -bag for virginica 
@@ -68,6 +69,38 @@ biplot (iris[,1:4], group.aes=iris[,5]) |> PCA() |>
 ```
 
 <img src="man/figures/README-aes_example-1.png" width="100%" />
+
+## CA biplot
+
+The default CA biplots represents row principal coordinates with a call
+such as:
+
+``` r
+biplot(HairEyeColor[,,2], center = FALSE) |> CA() |> plot()
+```
+
+<img src="man/figures/README-ca_default-1.png" width="100%" />
+
+To change to row standard coordinates use a call such as:
+
+``` r
+biplot(HairEyeColor[,,2], center = FALSE) |> 
+  CA(variant = "Stand") |> samples(col=c("magenta","purple"), pch=c(15,18)) |> plot()
+```
+
+<img src="man/figures/README-ca_standard-1.png" width="100%" />
+
+## Regression biplot
+
+With the function `regress` linear regression biplot axes can be fitted
+to a biplot
+
+``` r
+out <- biplot(iris) |> PCO(dist.func = sqrtManhattan) 
+biplot(iris) |> regress(out$Z) |> plot()
+```
+
+<img src="man/figures/README-regress-1.png" width="100%" />
 
 ## Report Bugs and Support
 
