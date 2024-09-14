@@ -2,22 +2,12 @@
 #' Generic Plotting function of objects of class biplot
 #'
 #' @param x An object of class \code{biplot}.
-#' @param exp.factor numeric value with default axes of the biplot. Larger values for zooming out and
-#' smaller values for zooming in with respect to sample points
-#' in the biplot display.
-#' @param axis.predictivity either logical or a numeric value between 0 and 1.
-#'          If it is a numeric value, this value is used as threshold so that
-#'          only axes with axis predictivity larger than the threshold is displayed.
-#'          If \code{axis.predictivity = TRUE}, the axis color is 'diluted' in
-#'          proportion with the axis predictivity.
-#' @param sample.predictivity either a logical or a numeric value between 0 and 1.
-#'          If it is a numeric value, this value is used as threshold so that
-#'          only samples with sample predictivity larger than the threshold is displayed.
-#'          if \code{sample.predictivity = TRUE}, the sample size is shrinked in
-#'          proportion with the sample predictivity.
-#' @param zoom logical, allowing the user to select an area to zoom into
-#' @param xlim horisontal limits of the plot
-#' @param ylim vertical limits of the plot
+#' @param exp.factor a numeric value with default axes of the biplot. Larger values are specified for zooming out with respect to sample points in the biplot display and smaller values are specified for zooming in with respect to sample points in the biplot display.
+#' @param axis.predictivity either a logical or a numeric value between \code{0} and \code{1}. If it is a numeric value, this value is used as threshold so that only axes with axis predictivity larger than the threshold is displayed. If \code{axis.predictivity = TRUE}, the axis colour is 'diluted' in proportion with the axis predictivity.
+#' @param sample.predictivity either a logical or a numeric value between 0 and 1. If it is a numeric value, this value is used as threshold so that only samples with sample predictivity larger than the threshold is displayed. If \code{sample.predictivity = TRUE}, the sample size is shrinked in proportion with the sample predictivity.
+#' @param zoom a logical value allowing the user to select an area to zoom into.
+#' @param xlim the horizontal limits of the plot.
+#' @param ylim the vertical limits of the plot.
 #' @param ... additional arguments.
 #'
 #' @return An object of class \code{biplot}.
@@ -73,7 +63,7 @@ plot.biplot <- function(x, exp.factor=1.2, axis.predictivity=NULL, sample.predic
   ggrepel.new <- ggrepel.means <- ggrepel.samples <- NULL
   if (do.ggrepel)
   {
-    out <- .get.ggrepel.coords(df)
+    out <- R.devices::suppressGraphics(.get.ggrepel.coords(df))
     if (n.newsamples>n.means) ggrepel.new <-list(coords = out$coords[out$visible>n.newsamples & out$visible<n.means+1,,drop=F],
                                                  visible = out$visible[out$visible>n.newsamples & out$visible<n.means+1]-n.means,
                                                  textlines = out$textlines[out$textlines>n.newsamples & out$textlines<n.means+1]-n.means)
@@ -107,7 +97,7 @@ plot.biplot <- function(x, exp.factor=1.2, axis.predictivity=NULL, sample.predic
       if(is.null(xlim) & is.null(ylim)){
         xlim <- range(Z[, 1] * exp.factor)
         ylim <- range(Z[, 2] * exp.factor)
-    }
+      }
       
       # Start with empty plot
       plot(Z[, 1] * exp.factor, Z[, 2] * exp.factor, xlim = xlim, ylim = ylim,
@@ -182,34 +172,34 @@ plot.biplot <- function(x, exp.factor=1.2, axis.predictivity=NULL, sample.predic
             if (x$scaled) Xhat <- scale(Xhat, center=FALSE, scale=1/x$sd)
             if (x$center) Xhat <- scale(Xhat, center=-1*x$means, scale=FALSE)
             
-            if(!is.null(x$PCOaxes)) { if(x$PCOaxes == "splines") # Only for PCO - if axes (type) is set to splines.  
-            {
-              z.axes <- lapply(1:length(ax.aes$which), biplot.spline.axis, Z, Xhat, means=x$means, sd=x$sd, n.int=ax.aes$ticks, 
+            if(!is.null(x$PCOaxes)) 
+              { if (x$PCOaxes == "splines") # Only for PCO - if axes (type) is set to splines.  
+                  {
+                    z.axes <- lapply(1:length(ax.aes$which), biplot.spline.axis, Z, x$raw.X, 
+                               means=x$means, sd=x$sd, n.int=ax.aes$ticks, 
                                spline.control=x$spline.control)
-              .nonlin.axes.plot(z.axes,ax.aes,predict.mat,too.small, usr=usr,x=x)
+                    .nonlin.axes.plot(z.axes,ax.aes,predict.mat,too.small, usr=usr,x=x)
               
-            } else if(x$PCOaxes == "regression") # Only for PCO - if axes (type) is set to regression. 
-            {
-              z.axes <- lapply(1:length(ax.aes$which), .calibrate.axis, Xhat, x$means, x$sd, x$ax.one.unit, ax.aes$which,
+                  } 
+                else if(x$PCOaxes == "regression") # Only for PCO - if axes (type) is set to regression. 
+                       {
+                         z.axes <- lapply(1:length(ax.aes$which), .calibrate.axis, Xhat, x$means, x$sd, x$ax.one.unit, ax.aes$which,
+                                        ax.aes$ticks, ax.aes$orthogx, ax.aes$orthogy)
+                        .lin.axes.plot(z.axes, ax.aes, predict.mat, too.small,usr=usr,predict_which=x$predict$which)
+                       }
+              } 
+            else 
+              { # Otherwise calibrate linear axes
+                z.axes <- lapply(1:length(ax.aes$which), .calibrate.axis, Xhat, x$means, x$sd, x$ax.one.unit, ax.aes$which,
                                ax.aes$ticks, ax.aes$orthogx, ax.aes$orthogy)
-              .lin.axes.plot(z.axes, ax.aes, predict.mat, too.small,usr=usr,x=x)
-              
+                .lin.axes.plot(z.axes, ax.aes, predict.mat, too.small,usr=usr,predict_which=x$predict$which)
+              }
             }
-              } else { # Otherwise calibrate linear axes
-              
-              z.axes <- lapply(1:length(ax.aes$which), .calibrate.axis, Xhat, x$means, x$sd, x$ax.one.unit, ax.aes$which,
-                               ax.aes$ticks, ax.aes$orthogx, ax.aes$orthogy)
-              .lin.axes.plot(z.axes, ax.aes, predict.mat, too.small,usr=usr,x=x)
-              }}
             if (ax.aes$vectors) { # Draw vectors on the calibrated axes
               # this only draws vectors on top of the chosen calibrated axis 
-              if(inherits(x,"PCA")) .lin.axes.vector.plot(x$V.mat[,1:2],ax.aes)
+              if(inherits(x,"PCA")) .lin.axes.vector.plot(x$Lmat[,1:2],ax.aes)
             }
-        if (ax.aes$vectors) { # Draw vectors on the calibrated axes
-          # this only draws vectors on top of the chosen calibrated axis 
-          if(inherits(x,"PCA")) .lin.axes.vector.plot(x$V.mat[,1:2],ax.aes)
-          }
-      
+
       # Interpolate new axes 
       if(!is.null(x$newvariable)) { if(is.null(x$newaxes)) x <- newaxes(x) 
       
@@ -221,7 +211,7 @@ plot.biplot <- function(x, exp.factor=1.2, axis.predictivity=NULL, sample.predic
         z.axes.new <- lapply(1:length(new.ax.aes$which), .calibrate.axis, 
                              x$newvariable, x$new.means, x$new.sd, x$new.ax.one.unit, new.ax.aes$which,
                              new.ax.aes$ticks, new.ax.aes$orthogx, new.ax.aes$orthogy)
-        .lin.axes.plot(z.axes.new, new.ax.aes, predict.mat, too.small, x=x, usr=usr)
+        .lin.axes.plot(z.axes.new, new.ax.aes, predict.mat, too.small, usr=usr, predict_which=x$predict$which)
       }
       }
       
@@ -247,7 +237,6 @@ plot.biplot <- function(x, exp.factor=1.2, axis.predictivity=NULL, sample.predic
                       too.small, cex.vec, usr=usr,x$alpha.bag.outside,
                       x$alpha.bag.aes)}
 
-      
       # New samples 
       if (!is.null(x$Znew)) if (is.null(x$newsamples)) x <- newsamples(x)
       if (!is.null(x$Znew)) .newsamples.plot (x$Znew, x$newsamples, ggrepel.new, usr=usr)
@@ -257,6 +246,18 @@ plot.biplot <- function(x, exp.factor=1.2, axis.predictivity=NULL, sample.predic
       {
         if (is.null(x$means.aes)) x <- means(x)
         .means.plot (x$Zmeans, x$means.aes, x$g.names, ggrepel.means,usr=usr)
+      }
+
+      # CLPs 
+      if (!is.null(x$CLP.coords)) 
+        {
+        if (is.null(x$CLP.aes)) x <- CLPs(x)
+        if  (!is.null(x$CLP.aes$which) & !inherits(x, "CA"))
+        {
+          for (i in 1:length(x$CLP.aes$which))
+            .CLPs.plot(x$CLP.coords[[x$CLP.aes$which[i]]], 
+                       x$CLP.aes$col[[i]], x$CLP.aes$cex[[i]])
+        }
       }
       
       # Alpha bags 
@@ -303,11 +304,10 @@ plot.biplot <- function(x, exp.factor=1.2, axis.predictivity=NULL, sample.predic
 #'
 #' @return an object of class \code{biplot}
 #' 
-#' @export
+#' @noRd
 #'
 #' @examples
 #' biplot(data = iris) |> PCA(dim.biplot = 3) |> plot3D()
-
 plot3D <- function(bp,
                     exp.factor = 1.2,...)
 {
