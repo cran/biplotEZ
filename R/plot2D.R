@@ -135,6 +135,30 @@
                  pos = text.pos, offset = sample.aes$label.offset)
 }
 
+#' newsamples CA plot
+#'
+#' @param newrowcoor new row coordinates
+#' @param newcolcoor new column coordinates
+#' @param newsamples newsamples aesthetics
+#'
+#' @noRd
+.newsamples.CA.plot <- function(newrowcoor, newcolcoor, newsamples)
+{
+  #first factor newrowcoor
+  graphics::points(x = newrowcoor[,1], y = newrowcoor[,2], pch = newsamples$pch[1],
+                   col = newsamples$col[1], cex = newsamples$cex[1])
+  text.pos <- match(newsamples$label.side[1], c("bottom", "left", "top", "right"))
+  graphics::text(x = newrowcoor[,1], y = newrowcoor[,2], labels = rownames(newrowcoor), 
+                 col = newsamples$col[1], cex = newsamples$label.cex[1],
+                 pos = text.pos, offset = newsamples$label.offset)
+  #second factor newcolcoor
+  graphics::points(x = newcolcoor[,1], y = newcolcoor[,2], pch = newsamples$pch[2],
+                   col = newsamples$col[2], cex = newsamples$cex[2])
+  text.pos <- match(newsamples$label.side[2], c("bottom", "left", "top", "right"))
+  graphics::text(x = newcolcoor[,1], y = newcolcoor[,2], labels = rownames(newcolcoor),
+                 col = newsamples$col[2], cex = newsamples$label.cex[2],
+                 pos = text.pos, offset = newsamples$label.offset)
+}
 #' Title
 #'
 #' @param Z 
@@ -649,7 +673,7 @@
 #' @noRd
 .density.plot <- function(Z.density, density.style) 
 {
-  
+
   levels.rect <- pretty(range(Z.density$z), n = density.style$cuts)
   col.use <- colorRampPalette(density.style$col)
   col.use <- col.use(length(levels.rect) - 1)
@@ -658,6 +682,8 @@
   if (density.style$contours) 
     graphics::contour(Z.density, levels = levels.rect, col = density.style$contour.col, add = TRUE)
   list(levels.rect, col.use)
+
+
 }
 
 
@@ -676,7 +702,7 @@
 #' @useDynLib biplotEZ, .registration = TRUE
 #'
 #' @noRd
-biplot.spline.axis <- function(j, X, Ytilde, means, sd, 
+biplot.spline.axis <- function(j, X, Y, means, sd, 
                                n.int, spline.control, dmeth=0, ... )
 {
   n <- nrow(X)
@@ -685,7 +711,7 @@ biplot.spline.axis <- function(j, X, Ytilde, means, sd,
     {  
       my.sample <- sample (1:n, size=103, replace=F)
       X <- X[my.sample,]
-      Ytilde <- Ytilde[my.sample,]
+      Y <- Y[my.sample,]
       n <- nrow(X)
     }
   
@@ -705,7 +731,7 @@ biplot.spline.axis <- function(j, X, Ytilde, means, sd,
   
   cat ("Calculating spline axis for variable", j, "\n")
   if(dmeth==1) stop("dmeth should be equal to zero or integer greater than 1 \n")  
-  Y <- scale(Ytilde,center=means,scale=sd)
+  Ytilde <- scale(scale(Y, center=FALSE, scale=1/sd), center=-1*means, scale=FALSE)
   
   ytilde <- Ytilde[,j]
   mutilde <- seq(from=min(ytilde),to=max(ytilde),length.out=nmu)

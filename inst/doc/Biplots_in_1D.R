@@ -24,6 +24,10 @@ bp <- biplot(iris) |> CVA(classes = iris[,5],dim.biplot = 1)|>
 print(bp)
 
 ## -----------------------------------------------------------------------------
+biplot(HairEyeColor[,,2], center = FALSE) |> CA(variant = "Princ", 
+  dim.biplot=1, lambda.scal = T) |> plot()
+
+## -----------------------------------------------------------------------------
 biplot(iris[c(1:50,101:150),1:4])|> PCA(dim.biplot = 1) |> axes(col="black") |> 
   interpolate(newdata = iris[51:100,1:4]) |> newsamples(col="purple") |> plot()
 

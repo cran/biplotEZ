@@ -105,6 +105,18 @@ plot.biplot <- function(x, exp.factor=1.2, axis.predictivity=NULL, sample.predic
 
       usr <- graphics::par("usr")
 
+      # Category Level Regions - this should be plotted first. 
+      if (!is.null(x$CLPs))
+        if (!is.null(x$CLR.aes))
+        {
+          x <- CLRs(x)
+          a <- predict.regions(x$CLPs[[x$CLR.aes$which]],usr)
+          for(i in 1:length(a))
+          {
+            graphics::polygon(a[[i]],col=x$CLR.aes$col[i],border = NULL)
+          }
+        }
+
       # Classification Regions - this should be plotted first. 
       # if(!is.null(x$classify)) x <- classify(x)
       classify.aes <- x$classify$aes
@@ -156,7 +168,13 @@ plot.biplot <- function(x, exp.factor=1.2, axis.predictivity=NULL, sample.predic
       }
 
       if(inherits(x,"CA")){ # CA map
-        if(x$dim.biplot == 2) .CA.plot(x$rowcoor, x$colcoor, x$group.aes, x$samples, x$r, x$c, x$g.names) else{
+        if(x$dim.biplot == 2)
+          {.CA.plot(x$rowcoor, x$colcoor, x$group.aes, x$samples, x$r, x$c, x$g.names) 
+          # New samples 
+          if (!is.null(x$Znew)) .newsamples.CA.plot(x$newrowcoor, x$newcolcoor, x$newsamples)
+          # Legends 
+          if (!is.null(x$legend)) do.call(biplot.legend, list(bp=x, x$legend.arglist))
+          } else{
           if(x$dim.biplot == 3) .CA.plot3d(x$rowcoor, x$colcoor, x$group.aes, x$samples, x$r, x$c, x$g.names, ...)
         }
       } else
@@ -175,7 +193,7 @@ plot.biplot <- function(x, exp.factor=1.2, axis.predictivity=NULL, sample.predic
             if(!is.null(x$PCOaxes)) 
               { if (x$PCOaxes == "splines") # Only for PCO - if axes (type) is set to splines.  
                   {
-                    z.axes <- lapply(1:length(ax.aes$which), biplot.spline.axis, Z, x$raw.X, 
+                    z.axes <- lapply(1:length(ax.aes$which), biplot.spline.axis, Z, x$X, 
                                means=x$means, sd=x$sd, n.int=ax.aes$ticks, 
                                spline.control=x$spline.control)
                     .nonlin.axes.plot(z.axes,ax.aes,predict.mat,too.small, usr=usr,x=x)

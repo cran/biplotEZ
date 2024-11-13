@@ -71,8 +71,10 @@ my.plot <- scene3d()
 rglwidget(my.plot)
 
 ## -----------------------------------------------------------------------------
-biplot(HairEyeColor[,,2], center = FALSE) |> CA(variant = "Symmetric", dim.biplot = 3) |> 
-samples(col=c("darkred","forestgreen"), pch=c(15,17), label.col="black") |> plot()
+biplot(HairEyeColor[,,2], center = FALSE) |> 
+  CA(variant = "Symmetric", dim.biplot = 3) |>
+  samples(col=c("darkred","forestgreen"), pch=c(15,17), label.col="black") |>
+  plot()
 
 ## ----echo=FALSE---------------------------------------------------------------
 my.plot <- scene3d()

@@ -33,7 +33,8 @@ Dc <- diag(apply(P, 2, sum))
 Dc
 
 ## -----------------------------------------------------------------------------
-Smat <- sqrt(solve(Dr))%*%(P-(Dr %*%matrix(1, nrow = nrow(X), ncol = ncol(X)) %*%  Dc))%*%sqrt(solve(Dc))
+Smat <- sqrt(solve(Dr))%*%(P-(Dr %*%matrix(1, nrow = nrow(X), 
+    ncol = ncol(X)) %*%  Dc))%*%sqrt(solve(Dc))
 svd.out <- svd(Smat)
 svd.out
 
@@ -46,22 +47,41 @@ colcoor <- svd.out[[3]]%*%(diag(svd.out[[1]])^(1-gamma))
 biplot(HairEyeColor[,,2], center = FALSE) |> CA() |> plot()
 
 ## -----------------------------------------------------------------------------
-ca.out <- biplot(HairEyeColor[,,2], center = FALSE) |> CA(variant = "Stand") |> plot()
-ca.out$qual
+ca.out <- biplot(HairEyeColor[,,2], center = FALSE) |> CA(variant = "Stand") |> 
+  plot()
 
 ## -----------------------------------------------------------------------------
-ca.out <- biplot(HairEyeColor[,,2], center = FALSE) |> CA(variant = "Symmetric") |> plot()
-ca.out$qual
+ca.out <- biplot(HairEyeColor[,,2], center = FALSE) |> 
+  CA(variant = "Symmetric") |> plot()
 ca.out$lambda.val
 
 ## -----------------------------------------------------------------------------
-biplot(HairEyeColor[,,2], center = FALSE) |> CA(variant = "Princ") |> 
-  samples(col=c("cyan","purple"), pch=c(15,17), label.side=c("bottom","top"), 
-          label.cex=1) |> legend.type(samples = TRUE, new = TRUE) |> plot()
+ca.out <- biplot(HairEyeColor[,,2], center = FALSE) |> 
+  CA(variant = "Symmetric") |> fit.measures()
+print("Quality")
+ca.out$quality
+print("Adequacy")
+ca.out$adequacy
+print("Row predictivities")
+ca.out$row.predictivities
+print("Column predictivities")
+ca.out$col.predictivities
 
 ## -----------------------------------------------------------------------------
 biplot(HairEyeColor[,,2], center = FALSE) |> CA(variant = "Symmetric") |> 
-  samples(col=c("forestgreen","magenta"), pch=c(12,17), label.side=c("top","bottom")) |> legend.type(samples = TRUE) |> plot()
+  samples(pch = c(0,2)) |> interpolate(newdata = HairEyeColor[,,1]) |> 
+  newsamples(col = c("orange","purple"), pch = c(15,17)) |> plot()      
+
+## -----------------------------------------------------------------------------
+biplot(HairEyeColor[,,2], center = FALSE) |> CA(variant = "Princ") |> 
+  samples(col = c("cyan","purple"), pch = c(15,17), label.side = c("bottom","top"), 
+          label.cex = 1) |> legend.type(samples = TRUE, new = TRUE) |> plot()
+
+## -----------------------------------------------------------------------------
+biplot(HairEyeColor[,,2], center = FALSE) |> CA(variant = "Symmetric") |> 
+  samples(col = c("forestgreen","magenta"), pch = c(12,17), 
+          label.side = c("top","bottom")) |> 
+  legend.type(samples = TRUE) |> plot()
 
 ## -----------------------------------------------------------------------------
 SACrime <- matrix(c(1235,432,1824,1322,573,588,624,169,629,34479,16833,46993,30606,13670,
@@ -82,7 +102,8 @@ names(dimnames(SACrime))[[2]] <- "Crimes"
 SACrime
 
 ## -----------------------------------------------------------------------------
-biplot(SACrime, center = FALSE) |> CA(variant = "Symmetric", lambda.scal = TRUE) |> 
-  samples(col=c("cyan","purple"), pch=c(15,17), label.side=c("bottom","top")) |>
+biplot(SACrime, center = FALSE) |> 
+  CA(variant = "Symmetric", lambda.scal = TRUE) |> 
+  samples(col = c("cyan","purple"), pch = c(15,17), label.side = c("bottom","top")) |>
   legend.type(samples = TRUE, new = TRUE) |> plot()
 
